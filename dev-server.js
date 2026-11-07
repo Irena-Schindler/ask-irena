@@ -10,7 +10,7 @@ http.createServer(async (req, res) => {
     const shim = { status(c) { res.statusCode = c; return shim; }, json(o) { res.setHeader("content-type", "application/json"); res.end(JSON.stringify(o)); } };
     return handler(req, shim);
   }
-  const file = req.url === "/" ? "index.html" : req.url.slice(1).split("?")[0];
+  let file = req.url.split("?")[0].slice(1); if (file === "" || file.endsWith("/")) file += "index.html";
   try { const b = await readFile(new URL(`./public/${file}`, import.meta.url)); res.end(b); }
   catch { res.statusCode = 404; res.end("not found"); }
 }).listen(3000, () => console.log("http://localhost:3000"));
