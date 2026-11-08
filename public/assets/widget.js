@@ -193,7 +193,11 @@
     add(T.booked(fmtFull(j.start), lead.email), 'iw-bot');
     history.push({role: 'assistant', content: '[Termin gebucht: ' + j.start + ']'});
   }
-  book.querySelector('a').addEventListener('click', e => { if (cfg && cfg.inlineBooking && lead) { e.preventDefault(); openPicker(); } });
+  book.querySelector('a').addEventListener('click', e => {
+    if (!(cfg && cfg.inlineBooking)) return;                       // fallback: Microsoft Bookings link
+    e.preventDefault();
+    window.open((de ? '/termin/' : '/book/') + (lead && lead.chatToken ? '#t=' + lead.chatToken : ''), '_blank');
+  });
   function sendTranscript() {
     if (!lead || history.length <= sentCount) return; sentCount = history.length;
     const payload = JSON.stringify({ kind: 'transcript', chatToken: lead.chatToken, transcript: history });
