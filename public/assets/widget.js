@@ -7,12 +7,14 @@
       gate: 'Kurz vorab: Wie darf ich Sie ansprechen? Irena bekommt Ihren Namen, Ihre E-Mail und den Gesprächsverlauf, damit sie sich persönlich melden kann.', name: 'Name', email: 'E-Mail',
       consent: 'Ich bin einverstanden, dass Name, E-Mail und dieser Chat zur Kontaktaufnahme verarbeitet werden (<a href="/datenschutz.html" target="_blank">Datenschutz</a>).', start: 'Chat starten',
       err: {name: 'Bitte Ihren Namen eingeben.', email: 'Bitte eine gültige E-Mail eingeben.', consent: 'Bitte der Datenverarbeitung zustimmen.', rate: 'Zu viele Versuche, bitte später erneut.', bot: 'Sicherheitsprüfung fehlgeschlagen. Bitte Seite neu laden.'}, check: 'Sicherheitsprüfung läuft …',
+      pick: tz => `Freier Termin gefällig? Zeiten in Ihrer Zeitzone (${tz}).`, loading: 'Freie Termine werden geladen …', none: 'Gerade sind keine Termine frei. Schreiben Sie gern an irena@aiden.ae.', confirm: d => `${d} verbindlich buchen`, back: '← andere Zeit', booked: (d, m) => `Ihr Kennenlerngespräch ist gebucht: ${d}. Die Bestätigung mit Teams-Link ist unterwegs an ${m}.`, taken: 'Dieser Termin wurde gerade vergeben. Bitte wählen Sie einen anderen.', bookErr: 'Das hat leider nicht geklappt. Bitte versuchen Sie es noch einmal oder schreiben Sie an irena@aiden.ae.', locale: 'de-DE',
       hiName: n => `Hallo ${n}, ich bin AIrena! Fragen Sie mich nach Irenas Erfahrung, Projekten oder Verfügbarkeit.`, book: '📅 Kennenlerngespräch buchen (30 Min.)', bookHint: 'Lust auf ein persönliches Gespräch mit Irena?'}
     : {title: AIR, sub: "Irena's AI assistant · online", hi: "Hi, I'm AIrena! Ask me about Irena's experience, projects or availability – in English or German.", ph: 'Type your question…', send: 'Send', open: 'Ask ' + AIR,
       chips: ['Is she available?', 'What voice AI work has she done?', 'What did she do at Volkswagen?'], off: 'The assistant is offline right now. Please write to irena@aiden.ae.',
       gate: 'Quick intro first: who am I talking to? Irena receives your name, e-mail and this conversation so she can get back to you personally.', name: 'Name', email: 'E-mail',
       consent: 'I agree that my name, e-mail and this chat are processed to contact me (<a href="/datenschutz.html" target="_blank">privacy</a>).', start: 'Start chat',
       err: {name: 'Please enter your name.', email: 'Please enter a valid e-mail.', consent: 'Please accept the data processing.', rate: 'Too many attempts, please try again later.', bot: 'Security check failed. Please reload the page.'}, check: 'Running security check…',
+      pick: tz => `Pick a free slot. Times are in your time zone (${tz}).`, loading: 'Loading free slots…', none: 'No free slots right now. Feel free to write to irena@aiden.ae.', confirm: d => `Book ${d}`, back: '← other time', booked: (d, m) => `Your intro call is booked: ${d}. The confirmation with the Teams link is on its way to ${m}.`, taken: 'That slot was just taken. Please choose another one.', bookErr: 'Sorry, that did not work. Please try again or write to irena@aiden.ae.', locale: 'en-GB',
       hiName: n => `Hi ${n}, I'm AIrena! Ask me about Irena's experience, projects or availability.`, book: '📅 Book a 30-min intro call', bookHint: 'Want to talk to Irena in person?'};
   const css = `
   .iw-ai{color:#f2c94c;text-shadow:0 0 10px rgba(242,201,76,.75),0 0 22px rgba(212,169,10,.45);font-weight:800}
@@ -53,6 +55,14 @@
   .iw-book{display:none;margin:0 16px 10px;padding:12px;border-radius:14px;background:rgba(212,169,10,.1);border:1px solid rgba(212,169,10,.45);text-align:center}
   .iw-book span{display:block;font-size:13px;color:#d9d5ca;margin-bottom:8px}
   .iw-book a{display:inline-block;background:#d4a90a;color:#111;text-decoration:none;font-weight:700;border-radius:999px;padding:10px 16px}
+  .iw-pick{max-height:250px;overflow-y:auto;text-align:left}
+  .iw-pick p{margin:0 0 8px;font-size:13px;color:#d9d5ca}
+  .iw-days{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px}
+  .iw-days button,.iw-times button{background:none;border:1px solid rgba(212,169,10,.45);color:#e8e2cf;border-radius:10px;padding:7px 10px;font:inherit;font-size:12.5px;cursor:pointer;white-space:nowrap}
+  .iw-days button.on,.iw-times button.on{background:#d4a90a;color:#111;border-color:#d4a90a;font-weight:700}
+  .iw-times{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .iw-pick .iw-ok{display:block;width:100%;margin-top:10px;background:#d4a90a;color:#111;border:0;border-radius:999px;padding:10px;font:inherit;font-weight:700;cursor:pointer}
+  .iw-pick .iw-back{background:none;border:0;color:#a9a59a;font:inherit;font-size:12.5px;cursor:pointer;padding:6px 0 0}
   .iw-chat{display:none;flex:1;flex-direction:column;min-height:0}
   @media (max-width:520px){.iw-btn span{display:none}.iw-btn{padding:8px}.iw-panel{right:16px;bottom:80px}}
   @media (prefers-reduced-motion:reduce){.iw-btn,.iw-panel.open,.iw-dots i{animation:none}}`;
@@ -107,7 +117,7 @@
     const sc = document.createElement('script'); sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; sc.async = true; sc.onload = draw; document.head.appendChild(sc);
   }
   function setBook() {
-    const a = book.querySelector('a');
+    const a = book.querySelector('a'); if (!a) return;
     if (bookingUrl) a.href = bookingUrl;   // used exactly as copied from Microsoft Bookings
     else a.href = `mailto:irena@aiden.ae?subject=${encodeURIComponent(de ? 'Kennenlerngespräch (30 Min.)' : 'Intro call (30 min)')}&body=${encodeURIComponent((lead ? lead.name + ', ' + lead.email + '\n\n' : '') + (de ? 'Ich würde gern einen Termin vereinbaren.' : 'I would like to schedule a call.'))}`;
   }
@@ -140,6 +150,45 @@
     lead = null; try { sessionStorage.removeItem('iw-lead'); } catch {}
     chat.style.display = 'none'; gate.style.display = 'flex'; gate.querySelector('.iw-go').disabled = false; pow = null; startPow();
   }
+
+  const tzName = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Berlin'; } catch { return 'Europe/Berlin'; } })();
+  const fmtDay = iso => new Date(iso).toLocaleDateString(T.locale, {weekday: 'short', day: 'numeric', month: 'short'});
+  const fmtTime = iso => new Date(iso).toLocaleTimeString(T.locale, {hour: '2-digit', minute: '2-digit'});
+  const fmtFull = iso => new Date(iso).toLocaleString(T.locale, {weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'}) + (de ? ' Uhr' : '');
+  const bookingApi = body => fetch('/api/booking', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({...body, chatToken: lead && lead.chatToken})})
+    .then(async r => ({status: r.status, ...(await r.json().catch(() => ({})))}));
+  let bookedDone = false;
+  async function openPicker(note) {
+    const box = book; box.innerHTML = `<div class="iw-pick"><p>${note || T.loading}</p></div>`;
+    const j = await bookingApi({action: 'slots'}).catch(() => ({status: 0}));
+    if (j.status === 401) return resetGate();
+    if (!j.ok) { box.innerHTML = `<div class="iw-pick"><p>${T.bookErr}</p></div>`; return; }
+    if (!j.slots.length) { box.innerHTML = `<div class="iw-pick"><p>${T.none}</p></div>`; return; }
+    const byDay = {}; j.slots.forEach(s => { const k = new Date(s).toLocaleDateString('en-CA'); (byDay[k] = byDay[k] || []).push(s); });
+    const days = Object.keys(byDay).sort(); let day = days[0], pick = '';
+    const draw = () => {
+      box.innerHTML = `<div class="iw-pick"><p>${note ? note + ' ' : ''}${T.pick(tzName.replace(/_/g, ' '))}</p>
+        <div class="iw-days">${days.map(d => `<button data-d="${d}" class="${d === day ? 'on' : ''}">${fmtDay(byDay[d][0])}</button>`).join('')}</div>
+        <div class="iw-times">${byDay[day].map(s => `<button data-s="${s}" class="${s === pick ? 'on' : ''}">${fmtTime(s)}</button>`).join('')}</div>
+        ${pick ? `<button class="iw-ok">${T.confirm(fmtFull(pick))}</button>` : ''}</div>`;
+      box.querySelectorAll('[data-d]').forEach(b => b.onclick = () => { day = b.dataset.d; pick = ''; draw(); });
+      box.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { pick = b.dataset.s; draw(); });
+      const ok = box.querySelector('.iw-ok'); if (ok) ok.onclick = () => confirmSlot(pick, ok);
+    };
+    draw();
+  }
+  async function confirmSlot(start, btnEl) {
+    btnEl.disabled = true; btnEl.textContent = '…';
+    const j = await bookingApi({action: 'book', start, tz: tzName}).catch(() => ({status: 0}));
+    if (j.status === 401) return resetGate();
+    if (j.status === 409) return openPicker(T.taken);
+    if (!j.ok) { btnEl.disabled = false; btnEl.textContent = T.bookErr; return; }
+    bookedDone = true;
+    book.innerHTML = `<span>✅ ${T.booked(fmtFull(j.start), lead.email)}</span>`;
+    add(T.booked(fmtFull(j.start), lead.email), 'iw-bot');
+    history.push({role: 'assistant', content: '[Termin gebucht: ' + j.start + ']'});
+  }
+  book.querySelector('a').addEventListener('click', e => { if (cfg && cfg.inlineBooking && lead) { e.preventDefault(); openPicker(); } });
   function sendTranscript() {
     if (!lead || history.length <= sentCount) return; sentCount = history.length;
     const payload = JSON.stringify({ kind: 'transcript', chatToken: lead.chatToken, transcript: history });

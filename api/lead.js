@@ -1,6 +1,6 @@
 // POST /api/lead {name,email,consent,lang,website?,challenge,nonce,turnstile?} -> {ok, chatToken}
 // POST /api/lead {kind:"transcript", chatToken, transcript:[...]}              -> sends the conversation to Irena
-import { notify, sendConfirmation, validateLead } from "../lib/lead.js";
+import { notify, validateLead } from "../lib/lead.js";
 import { rateLimited } from "../lib/guard.js";
 import { checkPow, sign, verify, verifyTurnstile } from "../lib/token.js";
 
@@ -26,9 +26,6 @@ export default async function handler(req, res) {
   if (!(await verifyTurnstile(body.turnstile, ip))) return res.status(403).json({ ok: false, reason: "bot" });
   const v = validateLead(body);
   if (!v.ok) return res.status(400).json({ ok: false, reason: v.reason });
-  await Promise.all([
-    notify("lead", v.lead, []).catch((e) => console.error("lead notify failed", e)),
-    sendConfirmation(v.lead).catch((e) => console.error("confirmation failed", e)),
-  ]);
+  try { await notify("lead", v.lead, []); } catch (e) { console.error("lead notify failed", e); }
   res.status(200).json({ ok: true, chatToken: sign({ ts: Date.now(), lead: v.lead }) });
 }

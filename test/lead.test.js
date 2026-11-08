@@ -26,14 +26,3 @@ test("notify uses resend and webhook when configured", async () => {
   delete process.env.RESEND_API_KEY; delete process.env.LEAD_WEBHOOK_URL;
 });
 
-test("visitor confirmation is localized and never echoes links from the name", async () => {
-  const { renderConfirmation, sendConfirmation } = await import("../lib/lead.js");
-  const de = renderConfirmation({ name: "Max Muster", email: "m@x.de", lang: "de" }, "https://book.example/de");
-  assert.match(de.html, /Hallo Max,/); assert.match(de.html, /book\.example\/de/); assert.match(de.subject, /Danke/);
-  const spam = renderConfirmation({ name: "Win cash www.spam.biz", email: "m@x.de", lang: "en" });
-  assert.ok(!spam.html.includes("spam.biz")); assert.match(spam.html, /Hello,/);
-  process.env.RESEND_API_KEY = "k"; process.env.BOOKING_URL_EN = "https://book.example/en";
-  let sent; await sendConfirmation({ name: "Ann", email: "ann@x.com", lang: "en" }, async (_u, o) => { sent = JSON.parse(o.body); return { ok: true }; });
-  assert.deepEqual(sent.to, ["ann@x.com"]); assert.equal(sent.reply_to, "irena@aiden.ae"); assert.match(sent.html, /book\.example\/en/);
-  delete process.env.RESEND_API_KEY; delete process.env.BOOKING_URL_EN;
-});
