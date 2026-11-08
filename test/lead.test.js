@@ -7,7 +7,8 @@ test("lead validation", () => {
   assert.equal(validateLead({ name: "Max", email: "kein-email", consent: true }).reason, "email");
   assert.equal(validateLead({ name: "Max", email: "max@firma.de", consent: false }).reason, "consent");
   assert.equal(validateLead({ name: "M", email: "max@firma.de", consent: true }).reason, "name");
-  assert.equal(validateLead({ name: "Max", email: "max@firma.de", consent: true, website: "x" }).reason, "bot");
+  assert.equal(validateLead({ name: "Max", email: "max@firma.de", consent: true, hp: "x" }).reason, "bot");
+  assert.equal(validateLead({ name: "Max", email: "max@firma.de", consent: true, website: "https://autofill.example" }).ok, true);
 });
 
 test("mail escapes html and includes transcript", () => {

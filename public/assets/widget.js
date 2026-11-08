@@ -51,7 +51,7 @@
   .iw-gate label{display:flex;gap:8px;font-size:12.5px;color:#a9a59a;align-items:flex-start}.iw-gate label a{color:#f2c94c}
   .iw-gate .iw-go{background:#d4a90a;color:#111;border:0;border-radius:999px;padding:12px;font-weight:700;cursor:pointer;margin-top:4px}
   .iw-gate .iw-err{color:#ff8a80;font-size:13px;min-height:18px}
-  .iw-hp{position:absolute;left:-9999px}
+  .iw-hp{display:none}
   .iw-book{display:none;margin:0 16px 10px;padding:12px;border-radius:14px;background:rgba(212,169,10,.1);border:1px solid rgba(212,169,10,.45);text-align:center}
   .iw-book span{display:block;font-size:13px;color:#d9d5ca;margin-bottom:8px}
   .iw-book a{display:inline-block;background:#d4a90a;color:#111;text-decoration:none;font-weight:700;border-radius:999px;padding:10px 16px}
@@ -74,7 +74,7 @@
     <form class="iw-gate" novalidate><p>${T.gate}</p>
       <input type="text" name="name" autocomplete="name" placeholder="${T.name}" maxlength="80" aria-label="${T.name}">
       <input type="email" name="email" autocomplete="email" placeholder="${T.email}" maxlength="120" aria-label="${T.email}">
-      <input class="iw-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="iw-hp" aria-hidden="true"><input type="text" name="iw_x7_note" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other"></div>
       <label><input type="checkbox" name="consent"> <span>${T.consent}</span></label>
       <div class="iw-ts"></div>
       <div class="iw-err" aria-live="polite"></div><button class="iw-go">${T.start}</button></form>
@@ -126,7 +126,7 @@
   if (lead) openChat();
   gate.onsubmit = async e => {
     e.preventDefault(); const f = new FormData(gate), err = gate.querySelector('.iw-err');
-    const body = { name: (f.get('name') || '').trim(), email: (f.get('email') || '').trim(), consent: !!f.get('consent'), website: f.get('website') || '', lang: de ? 'de' : 'en' };
+    const body = { name: (f.get('name') || '').trim(), email: (f.get('email') || '').trim(), consent: !!f.get('consent'), hp: f.get('iw_x7_note') || '', lang: de ? 'de' : 'en' };
     if (body.name.length < 2) return err.textContent = T.err.name;
     if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(body.email)) return err.textContent = T.err.email;
     if (!body.consent) return err.textContent = T.err.consent;
