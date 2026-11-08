@@ -25,7 +25,7 @@ test("faq mode works without API key", async () => {
 
 test("unknown questions are not answered with invented facts", async () => {
   delete process.env.ANTHROPIC_API_KEY;
-  assert.match((await answer("What is her favourite football club?")).answer, /don't know/);
+  assert.match((await answer("What is her favourite football club?")).answer, /best discussed with Irena directly/);
 });
 
 test("llm path sends profile, maps UNKNOWN and falls back on API errors", async () => {
@@ -34,7 +34,7 @@ test("llm path sends profile, maps UNKNOWN and falls back on API errors", async 
   const ok = async (_u, o) => { body = JSON.parse(o.body); return { ok: true, json: async () => ({ content: [{ type: "text", text: "UNKNOWN" }] }) }; };
   const r = await answer("Does she speak French?", [], ok);
   assert.match(body.system, /Konica Minolta/);
-  assert.match(r.answer, /don't know/);
+  assert.match(r.answer, /best discussed with Irena directly/);
   const fail = async () => ({ ok: false });
   assert.equal((await answer("Is she available remote?", [], fail)).mode, "faq-fallback");
   delete process.env.ANTHROPIC_API_KEY;
