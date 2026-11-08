@@ -1,19 +1,22 @@
-// Floating "Ask my AI" chat widget. Uses the same /api/chat endpoint as the page section.
+// Floating "Ask AIrena" chat widget. Uses the same /api/chat endpoint as the page section.
 (() => {
   const de = document.documentElement.lang === 'de';
-  const T = de ? {title: 'Irenas KI-Assistent', sub: 'Online · antwortet aus geprüften Fakten', hi: 'Hallo! Fragen Sie mich nach Irenas Erfahrung, Projekten oder Verfügbarkeit.', ph: 'Ihre Frage …', send: 'Senden', open: 'Frag meine KI',
+  const AIR = '<span class="iw-ai">AI</span>rena';
+  const T = de ? {title: AIR, sub: 'Irenas KI-Assistentin · online', hi: 'Hallo, ich bin AIrena! Fragen Sie mich nach Irenas Erfahrung, Projekten oder Verfügbarkeit.', ph: 'Ihre Frage …', send: 'Senden', open: 'Frag ' + AIR,
       chips: ['Ist sie verfügbar?', 'Welche Voice-AI-Erfahrung hat sie?', 'Was hat sie bei VW gemacht?'], off: 'Der Assistent ist gerade nicht erreichbar. Bitte schreiben Sie an irena@aiden.ae.',
       gate: 'Kurz vorab: Wie darf ich Sie ansprechen? Irena bekommt Ihren Namen, Ihre E-Mail und den Gesprächsverlauf, damit sie sich persönlich melden kann.', name: 'Name', email: 'E-Mail',
       consent: 'Ich bin einverstanden, dass Name, E-Mail und dieser Chat zur Kontaktaufnahme verarbeitet werden (<a href="/datenschutz.html" target="_blank">Datenschutz</a>).', start: 'Chat starten',
-      err: {name: 'Bitte Ihren Namen eingeben.', email: 'Bitte eine gültige E-Mail eingeben.', consent: 'Bitte der Datenverarbeitung zustimmen.', rate: 'Zu viele Versuche, bitte später erneut.'},
-      hiName: n => `Hallo ${n}! Fragen Sie mich nach Irenas Erfahrung, Projekten oder Verfügbarkeit.`, book: '📅 Kennenlerngespräch buchen (30 Min.)', bookHint: 'Lust auf ein persönliches Gespräch mit Irena?'}
-    : {title: "Irena's AI assistant", sub: 'Online · answers from verified facts', hi: "Hi! Ask me about Irena's experience, projects or availability – in English or German.", ph: 'Type your question…', send: 'Send', open: 'Ask my AI',
+      err: {name: 'Bitte Ihren Namen eingeben.', email: 'Bitte eine gültige E-Mail eingeben.', consent: 'Bitte der Datenverarbeitung zustimmen.', rate: 'Zu viele Versuche, bitte später erneut.', bot: 'Sicherheitsprüfung fehlgeschlagen. Bitte Seite neu laden.'}, check: 'Sicherheitsprüfung läuft …',
+      hiName: n => `Hallo ${n}, ich bin AIrena! Fragen Sie mich nach Irenas Erfahrung, Projekten oder Verfügbarkeit.`, book: '📅 Kennenlerngespräch buchen (30 Min.)', bookHint: 'Lust auf ein persönliches Gespräch mit Irena?'}
+    : {title: AIR, sub: "Irena's AI assistant · online", hi: "Hi, I'm AIrena! Ask me about Irena's experience, projects or availability – in English or German.", ph: 'Type your question…', send: 'Send', open: 'Ask ' + AIR,
       chips: ['Is she available?', 'What voice AI work has she done?', 'What did she do at Volkswagen?'], off: 'The assistant is offline right now. Please write to irena@aiden.ae.',
       gate: 'Quick intro first: who am I talking to? Irena receives your name, e-mail and this conversation so she can get back to you personally.', name: 'Name', email: 'E-mail',
       consent: 'I agree that my name, e-mail and this chat are processed to contact me (<a href="/datenschutz.html" target="_blank">privacy</a>).', start: 'Start chat',
-      err: {name: 'Please enter your name.', email: 'Please enter a valid e-mail.', consent: 'Please accept the data processing.', rate: 'Too many attempts, please try again later.'},
-      hiName: n => `Hi ${n}! Ask me about Irena's experience, projects or availability.`, book: '📅 Book a 30-min intro call', bookHint: 'Want to talk to Irena in person?'};
+      err: {name: 'Please enter your name.', email: 'Please enter a valid e-mail.', consent: 'Please accept the data processing.', rate: 'Too many attempts, please try again later.', bot: 'Security check failed. Please reload the page.'}, check: 'Running security check…',
+      hiName: n => `Hi ${n}, I'm AIrena! Ask me about Irena's experience, projects or availability.`, book: '📅 Book a 30-min intro call', bookHint: 'Want to talk to Irena in person?'};
   const css = `
+  .iw-ai{color:#f2c94c;text-shadow:0 0 10px rgba(242,201,76,.75),0 0 22px rgba(212,169,10,.45);font-weight:800}
+  .iw-ts{min-height:0}
   .iw-btn{position:fixed;right:22px;bottom:22px;z-index:9999;display:flex;align-items:center;gap:10px;padding:10px 18px 10px 10px;border-radius:999px;border:1px solid rgba(242,201,76,.6);
     background:#0c0c0f;color:#f4f1e8;font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;cursor:pointer;box-shadow:0 10px 40px rgba(212,169,10,.35);animation:iwPulse 2.8s infinite}
   .iw-btn:hover{transform:translateY(-2px)}
@@ -23,8 +26,8 @@
     background:#0c0c0f;color:#f4f1e8;border:1px solid rgba(212,169,10,.5);border-radius:22px;overflow:hidden;box-shadow:0 0 0 6px rgba(212,169,10,.06),0 30px 90px rgba(0,0,0,.5);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
   .iw-panel.open{display:flex;animation:iwIn .25s ease-out}@keyframes iwIn{from{opacity:0;transform:translateY(12px)}}
   .iw-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.09)}
-  .iw-head .iw-orb{width:34px;height:34px}.iw-head b{display:block;font-size:15px}.iw-head span{font-size:12px;color:#a9a59a}
-  .iw-head span:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:6px;box-shadow:0 0 8px #4ade80}
+  .iw-head .iw-orb{width:34px;height:34px}.iw-head b{display:block;font-size:15px}.iw-head>div>span{font-size:12px;color:#a9a59a}
+  .iw-head>div>span:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:6px;box-shadow:0 0 8px #4ade80}
   .iw-x{margin-left:auto;background:none;border:0;color:#a9a59a;font-size:22px;cursor:pointer;line-height:1}
   .iw-log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
   .iw-m{max-width:85%;padding:10px 13px;border-radius:16px;white-space:pre-wrap}
@@ -54,15 +57,16 @@
   @media (max-width:520px){.iw-btn span{display:none}.iw-btn{padding:8px}.iw-panel{right:16px;bottom:80px}}
   @media (prefers-reduced-motion:reduce){.iw-btn,.iw-panel.open,.iw-dots i{animation:none}}`;
   const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
-  const btn = document.createElement('button'); btn.className = 'iw-btn'; btn.setAttribute('aria-label', T.open);
+  const btn = document.createElement('button'); btn.className = 'iw-btn'; btn.setAttribute('aria-label', de ? 'Frag AIrena' : 'Ask AIrena');
   btn.innerHTML = `<div class="iw-orb"></div><span>${T.open}</span>`;
-  const panel = document.createElement('div'); panel.className = 'iw-panel'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', T.title);
+  const panel = document.createElement('div'); panel.className = 'iw-panel'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'AIrena');
   panel.innerHTML = `<div class="iw-head"><div class="iw-orb"></div><div><b>${T.title}</b><span>${T.sub}</span></div><button class="iw-x" aria-label="close">×</button></div>
     <form class="iw-gate" novalidate><p>${T.gate}</p>
       <input type="text" name="name" autocomplete="name" placeholder="${T.name}" maxlength="80" aria-label="${T.name}">
       <input type="email" name="email" autocomplete="email" placeholder="${T.email}" maxlength="120" aria-label="${T.email}">
       <input class="iw-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label><input type="checkbox" name="consent"> <span>${T.consent}</span></label>
+      <div class="iw-ts"></div>
       <div class="iw-err" aria-live="polite"></div><button class="iw-go">${T.start}</button></form>
     <div class="iw-chat"><div class="iw-log"></div>
       <div class="iw-chips">${T.chips.map(c => `<button>${c}</button>`).join('')}</div>
@@ -72,8 +76,36 @@
   const log = panel.querySelector('.iw-log'), input = panel.querySelector('.iw-form input'), history = [];
   const gate = panel.querySelector('.iw-gate'), chat = panel.querySelector('.iw-chat'), book = panel.querySelector('.iw-book');
   const store = { get: k => { try { return JSON.parse(sessionStorage.getItem(k)); } catch { return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch {} } };
-  let lead = store.get('iw-lead'), bookingUrl = '', sentCount = 0;
-  fetch('/api/settings').then(r => r.json()).then(c => { bookingUrl = c.bookingUrl || ''; setBook(); }).catch(() => setBook());
+  let lead = store.get('iw-lead'), bookingUrl = '', sentCount = 0, cfg = null, pow = null, tsToken = '';
+  if (lead && !lead.chatToken) lead = null;                     // stored before the bot check existed
+  const loadCfg = () => fetch('/api/settings', {cache: 'no-store'}).then(r => r.json()).then(c => { cfg = c; cfg.at = Date.now(); bookingUrl = c.bookingUrl || ''; setBook(); return c; });
+  const ready = loadCfg().catch(() => { setBook(); return null; });
+  // Proof of work: find a nonce so that sha256(challenge + nonce) starts with `bits` zero bits.
+  async function solve(challenge, bits) {
+    const enc = new TextEncoder();
+    for (let n = 0; n < 5e6; n++) {
+      const h = new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(challenge + n)));
+      let need = bits, ok = true;
+      for (const b of h) { if (need >= 8) { if (b) { ok = false; break; } need -= 8; continue; } ok = need === 0 || (b >> (8 - need)) === 0; break; }
+      if (ok) return String(n);
+    }
+    return '';
+  }
+  function startPow() {
+    if (lead) return;
+    if (!pow || (cfg && Date.now() - cfg.at > 8 * 60 * 1000)) {
+      pow = (cfg && Date.now() - cfg.at < 8 * 60 * 1000 ? Promise.resolve(cfg) : ready.then(c => c && Date.now() - c.at < 8 * 60 * 1000 ? c : loadCfg()))
+        .then(c => { if (c && c.turnstileSiteKey) renderTurnstile(c.turnstileSiteKey); return c ? solve(c.challenge, c.bits).then(nonce => ({challenge: c.challenge, nonce})) : null; })
+        .catch(() => null);
+    }
+    return pow;
+  }
+  function renderTurnstile(key) {
+    const box = gate.querySelector('.iw-ts'); if (box.dataset.done) return; box.dataset.done = '1';
+    const draw = () => window.turnstile.render(box, {sitekey: key, theme: 'dark', language: de ? 'de' : 'en', callback: t => { tsToken = t; }, 'expired-callback': () => { tsToken = ''; }});
+    if (window.turnstile) return draw();
+    const sc = document.createElement('script'); sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; sc.async = true; sc.onload = draw; document.head.appendChild(sc);
+  }
   function setBook() {
     const a = book.querySelector('a');
     if (bookingUrl) { const u = new URL(bookingUrl); if (lead) { u.searchParams.set('name', lead.name); u.searchParams.set('email', lead.email); } a.href = u.toString(); }
@@ -88,15 +120,29 @@
     if (body.name.length < 2) return err.textContent = T.err.name;
     if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(body.email)) return err.textContent = T.err.email;
     if (!body.consent) return err.textContent = T.err.consent;
-    err.textContent = ''; gate.querySelector('.iw-go').disabled = true;
-    try { const r = await fetch('/api/lead', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(body)});
-      const j = await r.json(); if (!j.ok) { gate.querySelector('.iw-go').disabled = false; return err.textContent = T.err[j.reason] || T.err.email; } }
-    catch { /* network issue: still allow the chat */ }
-    lead = { name: body.name, email: body.email, lang: body.lang }; store.set('iw-lead', lead); openChat(); setTimeout(() => input.focus(), 50);
+    const go = gate.querySelector('.iw-go'); go.disabled = true; err.textContent = T.check;
+    let j = null;
+    try {
+      const p = await startPow(); if (!p || !p.nonce) throw new Error('pow');
+      Object.assign(body, p, {turnstile: tsToken});
+      const r = await fetch('/api/lead', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(body)});
+      j = await r.json();
+    } catch { j = {ok: false, reason: 'bot'}; }
+    if (!j.ok || !j.chatToken) {
+      go.disabled = false; pow = null; if (window.turnstile) try { window.turnstile.reset(); tsToken = ''; } catch {}
+      if (j.reason === 'bot') startPow();                      // fresh challenge for the next try
+      return err.textContent = T.err[j.reason] || T.err.bot;
+    }
+    err.textContent = '';
+    lead = { name: body.name, email: body.email, lang: body.lang, chatToken: j.chatToken }; store.set('iw-lead', lead); openChat(); setTimeout(() => input.focus(), 50);
   };
+  function resetGate() {
+    lead = null; try { sessionStorage.removeItem('iw-lead'); } catch {}
+    chat.style.display = 'none'; gate.style.display = 'flex'; gate.querySelector('.iw-go').disabled = false; pow = null; startPow();
+  }
   function sendTranscript() {
     if (!lead || history.length <= sentCount) return; sentCount = history.length;
-    const payload = JSON.stringify({ kind: 'transcript', lead, transcript: history });
+    const payload = JSON.stringify({ kind: 'transcript', chatToken: lead.chatToken, transcript: history });
     if (navigator.sendBeacon) navigator.sendBeacon('/api/lead', new Blob([payload], {type: 'application/json'}));
     else fetch('/api/lead', {method: 'POST', headers: {'content-type': 'application/json'}, body: payload, keepalive: true});
   }
@@ -105,13 +151,15 @@
   async function ask(text) {
     if (!text.trim()) return; add(text, 'iw-me'); input.value = ''; panel.querySelector('.iw-chips').style.display = 'none';
     const t = add('', 'iw-bot'); t.innerHTML = '<span class="iw-dots"><i></i><i></i><i></i></span>';
-    try { const r = await fetch('/api/chat', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({message: text, history})});
-      const j = await r.json(); t.textContent = j.answer; history.push({role: 'user', content: text}, {role: 'assistant', content: j.answer}); }
+    try { const r = await fetch('/api/chat', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({message: text, history, chatToken: lead && lead.chatToken})});
+      const j = await r.json();
+      if (r.status === 401) { t.remove(); return resetGate(); }
+      t.textContent = j.answer; history.push({role: 'user', content: text}, {role: 'assistant', content: j.answer}); }
     catch { t.textContent = T.off; }
     if (history.length >= 2) book.style.display = 'block';
     log.scrollTop = log.scrollHeight;
   }
-  const toggle = o => { panel.classList.toggle('open', o); if (o) setTimeout(() => (lead ? input : gate.querySelector('input')).focus(), 50); else sendTranscript(); };
+  const toggle = o => { panel.classList.toggle('open', o); if (o) startPow(); if (o) setTimeout(() => (lead ? input : gate.querySelector('input')).focus(), 50); else sendTranscript(); };
   btn.onclick = () => toggle(!panel.classList.contains('open'));
   panel.querySelector('.iw-x').onclick = () => toggle(false);
   panel.querySelector('.iw-form').onsubmit = e => { e.preventDefault(); ask(input.value); };

@@ -1,8 +1,9 @@
 // Vercel serverless function: POST /api/chat { message, history? } -> { answer, mode }
 import { PROFILE } from "../lib/knowledge.js";
 import { REFUSAL, UNKNOWN, faqAnswer, lang, rateLimited, validate } from "../lib/guard.js";
+import { verify } from "../lib/token.js";
 
-const SYSTEM = `You are the assistant on Dr. Irena Schindler's website. Recruiters and clients ask you about her.
+const SYSTEM = `You are AIrena, the AI assistant on Dr. Irena Schindler's website. Recruiters and clients ask you about her.
 Answer ONLY from the profile below, in the language of the question (German or English), in at most 4 short sentences.
 Refer to her in the third person. If the profile does not contain the answer, reply exactly with the token UNKNOWN.
 Never invent numbers, clients, employers or skills. Mention rates ONLY if the user asks about price or rates; then say they are on request.
@@ -43,7 +44,8 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
   const ip = (req.headers["x-forwarded-for"] || "").split(",")[0] || "anon";
   if (rateLimited(ip)) return res.status(429).json({ answer: "Too many questions, please try again later." });
-  const { message, history } = req.body || {};
+  const { message, history, chatToken } = req.body || {};
+  if (!verify(chatToken, 24 * 3600 * 1000)) return res.status(401).json({ answer: "Please start the chat with your name and e-mail first.", mode: "auth" });
   try {
     res.status(200).json(await answer(message, Array.isArray(history) ? history : []));
   } catch {
