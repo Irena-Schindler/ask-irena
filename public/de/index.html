@@ -271,13 +271,14 @@ footer a{color:var(--gold-2);text-decoration:none}
       <span class="label reveal">Selbst ausprobieren</span>
       <h2 class="reveal">Lesen Sie nicht meinen Lebenslauf. <em>Fragen Sie meine KI.</em></h2>
       <p class="sub reveal">Dieser Assistent kennt mein geprüftes Profil, auf Deutsch und Englisch. Was er nicht weiß, sagt er offen – genau das Verhalten, das ich für Kunden baue.</p>
-      <p class="note reveal">Fragen werden nicht gespeichert. Lieber direkt? <a href="mailto:irena@aiden.ae?subject=Project%20inquiry" style="color:#a07f05">irena@aiden.ae</a></p>
+      <p class="note reveal">Lieber direkt schreiben? <a href="mailto:irena@aiden.ae?subject=Project%20inquiry" style="color:#a07f05">irena@aiden.ae</a></p>
     </div>
-    <div class="chat reveal">
-      <header><div class="avatar"></div><div><b>Irenas KI-Assistent</b><span class="live">Online · antwortet aus geprüften Fakten</span></div></header>
-      <div class="log" id="log"><div class="msg bot">Hallo! Fragen Sie mich nach Irenas Erfahrung, Projekten oder Verfügbarkeit – auf Deutsch oder Englisch.</div></div>
-      <div class="chips" id="chips"><button>Ist sie für ein Remote-Projekt verfügbar?</button><button>Welche Voice-AI-Erfahrung hat sie?</button><button>Was hat sie bei Volkswagen gemacht?</button><button>Wie war das mit den 34.000 € bei Konica Minolta?</button></div>
-      <form id="f"><input id="q" maxlength="500" placeholder="Ihre Frage …" autocomplete="off" aria-label="Ihre Frage"><button>Fragen</button></form>
+    <div class="chat reveal" style="padding:34px;text-align:center">
+      <div class="avatar" style="width:72px;height:72px;margin:0 auto 18px"></div>
+      <h3 style="margin:0 0 8px;font-size:22px">Irenas KI-Assistent</h3>
+      <p style="color:#a9a59a;margin:0 0 22px">Name und E-Mail eingeben, Fragen stellen, danach direkt ein 30-minütiges Kennenlerngespräch buchen.</p>
+      <button class="btn gold" type="button" onclick="window.openIrenaChat&&openIrenaChat()">Chat starten →</button>
+      <p style="color:#a9a59a;font-size:13px;margin:18px 0 0">Ihre Angaben gehen nur an Irena – siehe Datenschutz.</p>
     </div>
   </div>
 </section>
@@ -329,17 +330,6 @@ const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersectin
   io.unobserve(e.target); }), {threshold: .15});
 document.querySelectorAll('.reveal').forEach((el, i) => { el.style.transitionDelay = (i % 4) * 90 + 'ms'; io.observe(el); });
 
-// chat
-const log = document.getElementById('log'), f = document.getElementById('f'), q = document.getElementById('q'), history = [];
-function add(text, cls) { const d = document.createElement('div'); d.className = 'msg ' + cls; d.textContent = text; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; }
-async function ask(text) { if (!text.trim()) return; add(text, 'me'); q.value = '';
-  const t = add('', 'bot'); t.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>';
-  try { const r = await fetch('/api/chat', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({message: text, history})});
-    const j = await r.json(); t.textContent = j.answer; history.push({role: 'user', content: text}, {role: 'assistant', content: j.answer}); }
-  catch (e) { t.textContent = 'Der Assistent ist gerade nicht erreichbar. Bitte schreiben Sie an irena@aiden.ae.'; }
-  log.scrollTop = log.scrollHeight; }
-f.addEventListener('submit', e => { e.preventDefault(); ask(q.value); });
-document.querySelectorAll('#chips button').forEach(b => b.addEventListener('click', () => ask(b.textContent)));
 </script>
 <script src="/assets/widget.js" defer></script>
 </body>
