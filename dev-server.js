@@ -3,10 +3,10 @@ import http from "node:http";
 import { readFile } from "node:fs/promises";
 import handler from "./api/chat.js";
 import lead from "./api/lead.js";
-import config from "./api/config.js";
+import config from "./api/settings.js";
 
 http.createServer(async (req, res) => {
-  const api = { "/api/chat": handler, "/api/lead": lead, "/api/config": config }[req.url];
+  const api = { "/api/chat": handler, "/api/lead": lead, "/api/settings": config }[req.url];
   if (api) {
     let raw = ""; for await (const c of req) raw += c;
     try { req.body = JSON.parse(raw || "{}"); } catch { req.body = raw; }

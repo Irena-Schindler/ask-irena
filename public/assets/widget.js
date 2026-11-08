@@ -73,7 +73,7 @@
   const gate = panel.querySelector('.iw-gate'), chat = panel.querySelector('.iw-chat'), book = panel.querySelector('.iw-book');
   const store = { get: k => { try { return JSON.parse(sessionStorage.getItem(k)); } catch { return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch {} } };
   let lead = store.get('iw-lead'), bookingUrl = '', sentCount = 0;
-  fetch('/api/config').then(r => r.json()).then(c => { bookingUrl = c.bookingUrl || ''; setBook(); }).catch(() => setBook());
+  fetch('/api/settings').then(r => r.json()).then(c => { bookingUrl = c.bookingUrl || ''; setBook(); }).catch(() => setBook());
   function setBook() {
     const a = book.querySelector('a');
     if (bookingUrl) { const u = new URL(bookingUrl); if (lead) { u.searchParams.set('name', lead.name); u.searchParams.set('email', lead.email); } a.href = u.toString(); }
