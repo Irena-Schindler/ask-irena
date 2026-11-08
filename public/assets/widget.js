@@ -22,7 +22,7 @@
   .iw-btn{position:fixed;right:22px;bottom:22px;z-index:9999;display:flex;align-items:center;gap:10px;padding:10px 18px 10px 10px;border-radius:999px;border:1px solid rgba(242,201,76,.6);
     background:#0c0c0f;color:#f4f1e8;font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;cursor:pointer;box-shadow:0 10px 40px rgba(212,169,10,.35);animation:iwPulse 2.8s infinite}
   .iw-btn:hover{transform:translateY(-2px)}
-  .iw-orb{width:42px;height:42px;border-radius:50%;flex:none;background:#0c0c0f url(/assets/airena.webp) center/cover no-repeat;border:2px solid #d4a90a;box-shadow:0 0 18px rgba(212,169,10,.7)}
+  .iw-orb{width:42px;height:42px;border-radius:50%;flex:none;background:#0c0c0f url(/assets/airena.webp?v=2) center/cover no-repeat;border:2px solid #d4a90a;box-shadow:0 0 18px rgba(212,169,10,.7)}
   @keyframes iwPulse{0%{box-shadow:0 0 0 0 rgba(212,169,10,.45),0 10px 40px rgba(212,169,10,.35)}70%{box-shadow:0 0 0 14px rgba(212,169,10,0),0 10px 40px rgba(212,169,10,.35)}100%{box-shadow:0 0 0 0 rgba(212,169,10,0),0 10px 40px rgba(212,169,10,.35)}}
   .iw-panel{position:fixed;right:22px;bottom:90px;z-index:9999;width:min(380px,calc(100vw - 32px));height:min(560px,calc(100vh - 120px));display:none;flex-direction:column;
     background:#0c0c0f;color:#f4f1e8;border:1px solid rgba(212,169,10,.5);border-radius:22px;overflow:hidden;box-shadow:0 0 0 6px rgba(212,169,10,.06),0 30px 90px rgba(0,0,0,.5);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
