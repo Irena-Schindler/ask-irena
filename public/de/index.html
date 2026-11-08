@@ -341,5 +341,6 @@ async function ask(text) { if (!text.trim()) return; add(text, 'me'); q.value = 
 f.addEventListener('submit', e => { e.preventDefault(); ask(q.value); });
 document.querySelectorAll('#chips button').forEach(b => b.addEventListener('click', () => ask(b.textContent)));
 </script>
+<script src="/assets/widget.js" defer></script>
 </body>
 </html>
