@@ -108,7 +108,7 @@
   }
   function setBook() {
     const a = book.querySelector('a');
-    if (bookingUrl) { const u = new URL(bookingUrl); if (lead) { u.searchParams.set('name', lead.name); u.searchParams.set('email', lead.email); } a.href = u.toString(); }
+    if (bookingUrl) a.href = bookingUrl;   // used exactly as copied from Microsoft Bookings
     else a.href = `mailto:irena@aiden.ae?subject=${encodeURIComponent(de ? 'Kennenlerngespräch (30 Min.)' : 'Intro call (30 min)')}&body=${encodeURIComponent((lead ? lead.name + ', ' + lead.email + '\n\n' : '') + (de ? 'Ich würde gern einen Termin vereinbaren.' : 'I would like to schedule a call.'))}`;
   }
   const add = (t, c) => { const d = document.createElement('div'); d.className = 'iw-m ' + c; d.textContent = t; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; };
