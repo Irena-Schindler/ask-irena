@@ -34,6 +34,11 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .logo{font:700 20px/1 var(--serif);color:#fff;text-decoration:none;letter-spacing:.2px}
 .logo b{color:var(--gold)}nav.light .logo{color:var(--text-dark)}
 .links{display:flex;gap:26px;align-items:center}
+.lang{display:inline-flex !important;align-items:center;gap:7px;padding:8px 13px;border:1px solid rgba(212,169,10,.55);border-radius:999px;font-weight:600 !important;letter-spacing:.04em}
+.lang:hover{background:rgba(212,169,10,.12)}
+.pill{white-space:nowrap}
+@media(max-width:520px){.links{gap:10px}.pill{padding:9px 14px;font-size:14px !important}.lang{padding:7px 10px}.lang svg{width:14px;height:14px}}
+.aiw{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35),0 0 10px rgba(255,255,255,.55);font-weight:800}
 .links a{text-decoration:none;font-size:15px;font-weight:500;color:rgba(255,255,255,.85)}
 nav.light .links a{color:#333}.links a:hover{color:var(--gold)}
 .pill{padding:10px 18px;border-radius:999px;background:var(--gold);color:#111 !important;font-weight:600;
@@ -163,7 +168,7 @@ footer a{color:var(--gold-2);text-decoration:none}
 
 @media (max-width:900px){
   .hero .wrap,.chatwrap{grid-template-columns:1fr}.orbit{width:min(320px,78vw);margin-top:20px}
-  .stats{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}.links a:not(.pill){display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}.links a:not(.pill):not(.lang){display:none}
   section{padding:80px 0}.stat b{font-size:36px}
 }
 @media (max-height:960px){.scroll{display:none}}
@@ -174,7 +179,7 @@ footer a{color:var(--gold-2);text-decoration:none}
 
 <nav id="nav"><div class="wrap">
   <a class="logo" href="#top">Dr. Irena <b>Schindler</b></a>
-  <div class="links"><a href="#work">Leistungen</a><a href="/de/fallstudien.html">Fallstudien</a><a href="#code">Code</a><a href="/">EN</a><a class="pill" href="#ask">Frag AIrena</a></div>
+  <div class="links"><a href="#work">Leistungen</a><a href="/de/fallstudien.html">Fallstudien</a><a href="#code">Code</a><a class="pill" href="#ask">Frag <span class="aiw">AI</span>rena</a><a class="lang" href="/" hreflang="en" lang="en" aria-label="English" title="English"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span>EN</span></a></div>
 </div></nav>
 
 <header class="hero" id="top">
@@ -185,7 +190,7 @@ footer a{color:var(--gold-2);text-decoration:none}
       <h1>Ich baue KI-Agenten, die <em>wirklich</em> mit Kunden sprechen.</h1>
       <p class="lead">Voice- und Chat-Agenten, LLM-Integrationen und ML-Systeme, die auch <i>nach der Demo</i> funktionieren. Zuvor Lead Data Scientist bei <i>Volkswagen</i> und Senior Data Scientist bei <i>Konica Minolta</i>.</p>
       <div class="cta">
-        <a class="btn gold" href="#ask">Frag AIrena über mich →</a>
+        <a class="btn gold" href="#ask">Frag <span class="aiw">AI</span>rena über mich →</a>
         <a class="btn ghost" href="/praesentation/index.html">Lena stellt mich vor</a>
         <a class="btn ghost" href="https://github.com/Irena-Schindler/Irena-Schindler/blob/main/Irena_Schindler_CV.pdf">Lebenslauf (PDF)</a>
       </div>

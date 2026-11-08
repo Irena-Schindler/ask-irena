@@ -17,3 +17,8 @@ h2{font:600 26px/1.2 var(--serif);margin:40px 0 10px}h3{margin:24px 0 6px}
 .note{font-size:14px;color:var(--muted);border-left:3px solid var(--gold);padding-left:12px}
 footer{background:var(--ink);color:#a9a59a;padding:30px 0;font-size:14px}footer a{color:var(--gold2);text-decoration:none;margin-right:14px}
 @media(max-width:720px){.grid{grid-template-columns:1fr}header.top nav a{margin:0 12px 0 0}}
+
+header.top nav{display:flex;align-items:center;flex-wrap:wrap}
+header.top nav a.lang{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid rgba(212,169,10,.55);border-radius:999px;font-weight:600;letter-spacing:.04em;color:#f4f1e8}
+header.top nav a.lang:hover{background:rgba(212,169,10,.12);color:#f4f1e8}
+.aig{color:#f2c94c;text-shadow:0 0 10px rgba(242,201,76,.7);font-weight:800}
