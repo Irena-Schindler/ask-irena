@@ -6,6 +6,8 @@ export default function handler(req, res) {
   res.setHeader("cache-control", "no-store");
   res.status(200).json({
     bookingUrl: process.env.BOOKING_URL || "",
+    bookingUrlDe: process.env.BOOKING_URL_DE || process.env.BOOKING_URL || "",
+    bookingUrlEn: process.env.BOOKING_URL_EN || process.env.BOOKING_URL || "",
     turnstileSiteKey: process.env.TURNSTILE_SITE_KEY || "",
     challenge: sign({ ts: Date.now(), r: randomBytes(8).toString("hex") }),
     bits: POW_BITS,

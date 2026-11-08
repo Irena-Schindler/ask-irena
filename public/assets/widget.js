@@ -78,7 +78,7 @@
   const store = { get: k => { try { return JSON.parse(sessionStorage.getItem(k)); } catch { return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch {} } };
   let lead = store.get('iw-lead'), bookingUrl = '', sentCount = 0, cfg = null, pow = null, tsToken = '';
   if (lead && !lead.chatToken) lead = null;                     // stored before the bot check existed
-  const loadCfg = () => fetch('/api/settings', {cache: 'no-store'}).then(r => r.json()).then(c => { cfg = c; cfg.at = Date.now(); bookingUrl = c.bookingUrl || ''; setBook(); return c; });
+  const loadCfg = () => fetch('/api/settings', {cache: 'no-store'}).then(r => r.json()).then(c => { cfg = c; cfg.at = Date.now(); bookingUrl = (de ? c.bookingUrlDe : c.bookingUrlEn) || c.bookingUrl || ''; setBook(); return c; });
   const ready = loadCfg().catch(() => { setBook(); return null; });
   // Proof of work: find a nonce so that sha256(challenge + nonce) starts with `bits` zero bits.
   async function solve(challenge, bits) {
