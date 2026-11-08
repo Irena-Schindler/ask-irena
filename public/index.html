@@ -277,12 +277,15 @@ footer a{color:var(--gold-2);text-decoration:none}
       <p class="sub reveal">AIrena, my AI assistant, knows my verified profile, in English and German. If it doesn't know something, it says so, exactly the behaviour I build for clients.</p>
       <p class="note reveal">Prefer to write directly? <a href="mailto:irena@aiden.ae?subject=Project%20inquiry" style="color:#a07f05">irena@aiden.ae</a></p>
     </div>
-    <div class="chat reveal" style="padding:34px;text-align:center">
+    <div class="chat reveal" style="padding:34px;text-align:center;position:relative;overflow:hidden">
+      <img src="/assets/airena-large.webp" alt="" aria-hidden="true" style="position:absolute;left:50%;top:50%;width:125%;max-width:none;transform:translate(-50%,-46%);opacity:.15;pointer-events:none;-webkit-mask-image:radial-gradient(closest-side,#000 45%,transparent 100%);mask-image:radial-gradient(closest-side,#000 45%,transparent 100%)">
+      <div style="position:relative;z-index:1">
       <img src="/assets/airena.webp" alt="AIrena" width="104" height="104" style="display:block;width:104px;height:104px;margin:0 auto 18px;border-radius:50%;object-fit:cover;border:3px solid #d4a90a;box-shadow:0 0 0 6px rgba(212,169,10,.12),0 0 36px rgba(212,169,10,.55)">
       <h3 style="margin:0 0 8px;font-size:22px"><span style="color:#f2c94c;text-shadow:0 0 10px rgba(242,201,76,.75),0 0 22px rgba(212,169,10,.45);font-weight:800">AI</span>rena · Irena's AI assistant</h3>
       <p style="color:#a9a59a;margin:0 0 22px">Enter your name and e-mail, ask anything, then book a 30-minute intro call right away.</p>
       <button class="btn gold" type="button" onclick="window.openIrenaChat&&openIrenaChat()">Start the chat →</button>
       <p style="color:#a9a59a;font-size:13px;margin:18px 0 0">Your details go to Irena only – see privacy.</p>
+    </div>
     </div>
   </div>
 </section>
