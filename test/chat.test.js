@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { answer } from "../api/chat.js";
+import { answer, trimToSentence } from "../api/chat.js";
 import { faqAnswer, lang, rateLimited, validate } from "../lib/guard.js";
 
 test("language detection", () => {
@@ -44,4 +44,12 @@ test("rate limit", () => {
   const now = 1e12;
   for (let i = 0; i < 20; i++) assert.equal(rateLimited("ip", now + i), false);
   assert.equal(rateLimited("ip", now + 21), true);
+});
+
+test("truncated model output is trimmed to the last full sentence", async () => {
+  assert.equal(trimToSentence("Sie baut Agenten. Sie bucht Termine, Rückr"), "Sie baut Agenten.");
+  process.env.ANTHROPIC_API_KEY = "test";
+  const cut = async () => ({ ok: true, json: async () => ({ stop_reason: "max_tokens", content: [{ type: "text", text: "Erster Satz. Zweiter Sa" }] }) });
+  assert.equal((await answer("Welche Voice-AI-Erfahrung hat sie?", [], cut)).answer, "Erster Satz.");
+  delete process.env.ANTHROPIC_API_KEY;
 });
