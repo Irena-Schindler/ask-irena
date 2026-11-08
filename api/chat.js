@@ -12,6 +12,12 @@ When it fits, end with a gentle invitation to contact her (irena@aiden.ae).
 PROFILE:
 ${PROFILE}`;
 
+// Never show a sentence cut off mid-word: fall back to the last complete sentence.
+export function trimToSentence(text) {
+  const m = text.match(/^[\s\S]*[.!?](?=\s|$)/);
+  return m ? m[0].trim() : text;
+}
+
 export async function answer(message, history = [], fetchImpl = fetch) {
   const v = validate(message);
   const l = lang(message);
@@ -24,11 +30,12 @@ export async function answer(message, history = [], fetchImpl = fetch) {
   const r = await fetchImpl("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: process.env.LLM_MODEL || "claude-haiku-5-5", max_tokens: 300, system: SYSTEM, messages: msgs }),
+    body: JSON.stringify({ model: process.env.LLM_MODEL || "claude-haiku-5-5", max_tokens: 1024, system: SYSTEM, messages: msgs }),
   });
   if (!r.ok) return { answer: faqAnswer(message) || UNKNOWN[l], mode: "faq-fallback" };
   const data = await r.json();
-  const text = (data.content || []).map((b) => b.text || "").join("").trim();
+  let text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text || "").join("").trim();
+  if (data.stop_reason === "max_tokens") text = trimToSentence(text);
   return { answer: !text || text.includes("UNKNOWN") ? UNKNOWN[l] : text, mode: "llm" };
 }
 
