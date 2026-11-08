@@ -22,8 +22,9 @@ export default async function handler(req, res) {
   }
 
   const ch = verify(body.challenge, 10 * 60 * 1000);
-  if (!ch || Date.now() - ch.ts < MIN_FILL_MS || !checkPow(body.challenge, body.nonce)) return res.status(403).json({ ok: false, reason: "bot" });
-  if (!(await verifyTurnstile(body.turnstile, ip))) return res.status(403).json({ ok: false, reason: "bot" });
+  const why = !body.challenge ? "no-challenge" : !ch ? "challenge-invalid-or-expired" : Date.now() - ch.ts < MIN_FILL_MS ? "too-fast"
+    : !checkPow(body.challenge, body.nonce) ? "pow" : !(await verifyTurnstile(body.turnstile, ip)) ? "turnstile" : "";
+  if (why) { console.warn("LEAD rejected", why, ip); return res.status(403).json({ ok: false, reason: "bot" }); }
   const v = validateLead(body);
   if (!v.ok) return res.status(400).json({ ok: false, reason: v.reason });
   try { await notify("lead", v.lead, []); } catch (e) { console.error("lead notify failed", e); }

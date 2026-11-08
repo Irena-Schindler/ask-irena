@@ -86,7 +86,7 @@
   const log = panel.querySelector('.iw-log'), input = panel.querySelector('.iw-form input'), history = [];
   const gate = panel.querySelector('.iw-gate'), chat = panel.querySelector('.iw-chat'), book = panel.querySelector('.iw-book');
   const store = { get: k => { try { return JSON.parse(sessionStorage.getItem(k)); } catch { return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch {} } };
-  let lead = store.get('iw-lead'), bookingUrl = '', sentCount = 0, cfg = null, pow = null, tsToken = '';
+  let fresh = false, lead = store.get('iw-lead'), bookingUrl = '', sentCount = 0, cfg = null, pow = null, tsToken = '';
   if (lead && !lead.chatToken) lead = null;                     // stored before the bot check existed
   const loadCfg = () => fetch('/api/settings', {cache: 'no-store'}).then(r => r.json()).then(c => { cfg = c; cfg.at = Date.now(); bookingUrl = (de ? c.bookingUrlDe : c.bookingUrlEn) || c.bookingUrl || ''; setBook(); return c; });
   const ready = loadCfg().catch(() => { setBook(); return null; });
@@ -104,8 +104,8 @@
   function startPow() {
     if (lead) return;
     if (!pow || (cfg && Date.now() - cfg.at > 8 * 60 * 1000)) {
-      pow = (cfg && Date.now() - cfg.at < 8 * 60 * 1000 ? Promise.resolve(cfg) : ready.then(c => c && Date.now() - c.at < 8 * 60 * 1000 ? c : loadCfg()))
-        .then(c => { if (c && c.turnstileSiteKey) renderTurnstile(c.turnstileSiteKey); return c ? solve(c.challenge, c.bits).then(nonce => ({challenge: c.challenge, nonce})) : null; })
+      pow = (cfg && Date.now() - cfg.at < 8 * 60 * 1000 ? Promise.resolve(cfg) : (fresh ? loadCfg() : ready.then(c => c && Date.now() - c.at < 8 * 60 * 1000 ? c : loadCfg())))
+        .then(c => { if (c && c.turnstileSiteKey) renderTurnstile(c.turnstileSiteKey); return c ? solve(c.challenge, c.bits).then(nonce => ({challenge: c.challenge, nonce, at: c.at})) : null; })
         .catch(() => null);
     }
     return pow;
@@ -132,12 +132,17 @@
     if (!body.consent) return err.textContent = T.err.consent;
     const go = gate.querySelector('.iw-go'); go.disabled = true; err.textContent = T.check;
     let j = null;
-    try {
-      const p = await startPow(); if (!p || !p.nonce) throw new Error('pow');
-      Object.assign(body, p, {turnstile: tsToken});
-      const r = await fetch('/api/lead', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(body)});
-      j = await r.json();
-    } catch { j = {ok: false, reason: 'bot'}; }
+    const attempt = async () => {
+      const p = await startPow(); fresh = false; if (!p || !p.nonce) throw new Error('pow');
+      const age = Date.now() - (p.at || 0); if (age < 2300) await new Promise(r => setTimeout(r, 2300 - age));   // server wants >= 2 s
+      const r = await fetch('/api/lead', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({...body, challenge: p.challenge, nonce: p.nonce, turnstile: tsToken})});
+      return r.json();
+    };
+    try { j = await attempt(); } catch { j = {ok: false, reason: 'bot'}; }
+    if (!j.ok && j.reason === 'bot' && !tsToken) {                 // one silent retry with a fresh challenge
+      pow = null; cfg = null; fresh = true;
+      try { j = await attempt(); } catch { j = {ok: false, reason: 'bot'}; }
+    }
     if (!j.ok || !j.chatToken) {
       go.disabled = false; pow = null; if (window.turnstile) try { window.turnstile.reset(); tsToken = ''; } catch {}
       if (j.reason === 'bot') startPow();                      // fresh challenge for the next try
