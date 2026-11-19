@@ -67,3 +67,13 @@ test("fixed answers and prompt stay positive", async () => {
   assert.match(body.system, /Microsoft Teams/);
   delete process.env.ANTHROPIC_API_KEY;
 });
+
+test("Profil enthält die Antworten aus dem Fakten-Fragebogen (20.11.2026)", async () => {
+  const { PROFILE } = await import("../lib/knowledge.js");
+  assert.match(PROFILE, /German and Russian at native level, English fluent/);
+  assert.match(PROFILE, /Engagement formats/);
+  assert.match(PROFILE, /does not travel/);
+  assert.match(PROFILE, /LinkedIn profile and on aiden\.ae/);
+  assert.match(PROFILE, /never used to train AI models/);
+  assert.match(PROFILE, /voice-agent-audit/);
+});
