@@ -5,9 +5,10 @@ import handler from "./api/chat.js";
 import lead from "./api/lead.js";
 import config from "./api/settings.js";
 import booking from "./api/booking.js";
+import demoChat from "./api/demo-chat.js";
 
 http.createServer(async (req, res) => {
-  const api = { "/api/chat": handler, "/api/lead": lead, "/api/settings": config, "/api/booking": booking }[req.url];
+  const api = { "/api/chat": handler, "/api/lead": lead, "/api/settings": config, "/api/booking": booking, "/api/demo-chat": demoChat }[req.url];
   if (api) {
     let raw = ""; for await (const c of req) raw += c;
     try { req.body = JSON.parse(raw || "{}"); } catch { req.body = raw; }

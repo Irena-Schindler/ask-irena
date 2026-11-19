@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>10 Stunden Woche Assistent</title>
+<meta name="description" content="Pilot: KI-Chatbot für Denise Mizurov, Die 10 Stunden Woche">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/demo/10stundenwoche/img/d10_logo_s.jpg">
+<link rel="stylesheet" href="/demo/assets/chat.css">
+<style>
+/* Layout: dark landing page in the brand's black/yellow, photo hero, type cards, then the docked chat.
+   Single dark theme on purpose: it mirrors die10stundenwoche.com. */
+:root{
+  color-scheme:dark;
+  --ink:#0A0A0A; --panel:#141414; --line:#2A2A2A; --text:#F4F4F2; --muted:#B4B2AC; --yellow:#FAD231; --yellow-ink:#141414;
+  --display:Syne,"Arial Black",Impact,sans-serif;
+  --body:"Source Sans 3","Source Sans Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cb-font:var(--body); --cb-head-font:var(--display); --cb-fg:var(--text); --cb-bg:#111111;
+  --cb-head-bg:var(--yellow); --cb-head-fg:var(--yellow-ink); --cb-ava-bg:#FFFFFF; --cb-border:var(--line); --cb-hover:rgba(0,0,0,.08);
+  --cb-bot-bubble:#1E1E1E; --cb-bot-fg:var(--text); --cb-user-bubble:var(--yellow); --cb-user-fg:var(--yellow-ink);
+  --cb-accent:var(--yellow); --cb-accent-fg:var(--yellow-ink); --cb-chip-border:#4A4A4A; --cb-card-bg:#1A1A1A; --cb-card-img:#222;
+  --cb-input-bg:#1A1A1A; --cb-radius:14px; --cb-bubble-radius:14px 14px 14px 4px; --cb-btn-radius:10px;
+}
+body{background:var(--ink);color:var(--text);font-family:var(--body);font-size:16px}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.pilot{background:var(--yellow);color:var(--yellow-ink);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.pilot .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:8px}
+.hero{position:relative;background:#000 url("/demo/10stundenwoche/img/hero_s.jpg") center 35%/cover no-repeat;border-bottom:3px solid var(--yellow)}
+.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.15) 100%)}
+.hero .wrap{position:relative;padding-block:28px 70px}
+.brandrow{display:flex;align-items:center;gap:12px;margin-bottom:56px}
+.brandrow img{width:54px;height:54px;border-radius:8px}
+.brandrow span{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.16em}
+.kicker{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.18em;margin:0 0 14px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.2vw,54px);line-height:1.04;margin:0 0 20px;text-transform:uppercase;text-wrap:balance;overflow-wrap:anywhere}
+h1 em{font-style:normal;color:var(--yellow)}
+.lead{font-size:18px;line-height:1.55;color:#E6E4DE;max-width:46ch;margin:0 0 28px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:14px 22px;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:.04em;text-decoration:none;border:2px solid var(--yellow);color:var(--yellow);background:transparent;cursor:pointer;font-family:var(--body)}
+.btn.solid{background:var(--yellow);color:var(--yellow-ink)}
+section.block{padding-block:56px}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(20px,2.6vw,30px);margin:0 0 10px;text-transform:uppercase}
+.sub{color:var(--muted);max-width:60ch;line-height:1.6;margin:0 0 28px}
+.types{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.type{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.type h3{font-family:var(--display);font-size:20px;margin:0}
+.type p{margin:0;color:var(--muted);line-height:1.55}
+.type button{align-self:flex-start;margin-top:6px;background:none;border:0;color:var(--yellow);font:inherit;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+.need{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:8px}
+.need div{border-top:3px solid var(--yellow);padding-top:12px;font-family:var(--display);font-weight:700;font-size:17px}
+.need small{display:block;font-family:var(--body);font-weight:400;font-size:14px;color:var(--muted);margin-top:4px}
+.note{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:120px}
+.note h3{font-family:var(--display);margin:0 0 10px;font-size:18px}
+.note ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.7}
+.quote{font-family:var(--display);font-weight:700;font-size:clamp(18px,2.4vw,24px);border-left:4px solid var(--yellow);padding-left:16px;margin:0 0 36px;max-width:40ch}
+@media (max-width:820px){.types{grid-template-columns:1fr}.need{grid-template-columns:repeat(2,minmax(0,1fr))}.brandrow{margin-bottom:32px}}
+</style>
+</head>
+<body>
+<div class="pilot"><div class="wrap"><span>Pilot · KI-Chatbot für Denise Mizurov</span><span>Vorschau, nicht die Live-Seite</span></div></div>
+
+<header class="hero"><div class="wrap">
+  <div class="brandrow"><img src="/demo/10stundenwoche/img/d10_logo_s.jpg" alt="Die 10 Stunden Woche Logo"><span>#DIE10STUNDENWOCHE</span></div>
+  <p class="kicker">DIE 10 STUNDENWOCHE</p>
+  <h1>Ein Job, der sich deinem <em>Leben</em> anpasst</h1>
+  <p class="lead">An alle ambitionierten Menschen, die nach einer echten Chance suchen, orts- und zeitunabhängig zu arbeiten. Stell deine Fragen direkt an Denises Assistenten.</p>
+  <div class="btns">
+    <button class="btn solid" data-open-chat data-q="Wie funktioniert die 10 Stunden Woche genau?">Wie funktioniert das?</button>
+    <a class="btn" href="https://denisemizurov.die10stundenwoche.com/#BEWERBUNG" target="_blank" rel="noopener">Erstgespräch anfragen</a>
+  </div>
+</div></header>
+
+<section class="block"><div class="wrap">
+  <h2>Welcher Typ Mensch bist du?</h2>
+  <p class="sub">Der Assistent stellt sich auf deine Ausgangslage ein und beantwortet ehrlich, was das Konzept leisten kann und was im Erstgespräch geklärt wird.</p>
+  <div class="types">
+    <div class="type"><h3>Der Karriere-Typ</h3><p>Ambitioniert, guter Job, viel Zeit für die Karriere, aber Karriere und Privatleben werden zum Spagat.</p><button data-open-chat data-q="Ich bin eher der Karriere-Typ und habe einen Vollzeitjob. Passt das Konzept zu mir?">Frag den Assistenten →</button></div>
+    <div class="type"><h3>Der Familien-Typ</h3><p>Deine Liebsten stehen an erster Stelle, du willst Flexibilität und mehr Unabhängigkeit im Alltag.</p><button data-open-chat data-q="Ich bin Mama/Papa und habe wenig Zeit. Wie kann ich das neben der Familie machen?">Frag den Assistenten →</button></div>
+  </div>
+</div></section>
+
+<section class="block" style="padding-top:0"><div class="wrap">
+  <p class="quote">„Chancen gehen nie verloren – sie werden bloß von anderen genutzt!“</p>
+  <h2>Was du brauchst</h2>
+  <div class="need">
+    <div>10 Stunden<small>pro Woche</small></div>
+    <div>Handy oder Laptop<small>kein Büro, kein Lager</small></div>
+    <div>Starkes Warum<small>dein persönlicher Grund</small></div>
+    <div>Lernbereitschaft<small>kostenlose Ausbildung</small></div>
+  </div>
+</div></section>
+
+<section class="block" style="padding-top:0"><div class="wrap">
+  <div class="note">
+    <h3>Was der Pilot kann</h3>
+    <ul>
+      <li>Erklärt Konzept, Ablauf und Voraussetzungen auf Basis der Website</li>
+      <li>Geht auf Karriere- und Familien-Typ ein und beantwortet Einwände („keine Zeit, keine Erfahrung, kein Netzwerk“)</li>
+      <li>Macht keine Einkommensversprechen und verweist bei Zahlen auf das Erstgespräch</li>
+      <li>Führt Interessierte zum Kontaktformular für das Erstgespräch mit Denise</li>
+    </ul>
+  </div>
+</div></section>
+
+<div class="cb" id="cb"></div>
+
+<script>
+window.BOT = {
+  name: "Denises Assistent",
+  avatar: "/demo/10stundenwoche/img/d10_logo_s.jpg",
+  t: { online:"Online · antwortet sofort", reset:"Neu starten", minimize:"Minimieren",
+       placeholder:"Deine Frage zur 10 Stunden Woche …", send:"Senden", open:"Chat öffnen", foot:"Pilot von AIDEN · keine Einkommensversprechen, Details im Erstgespräch" },
+  greeting: "Hi, schön dass du da bist! 👋 Ich bin der digitale Assistent von **Denise Mizurov**.\nIch beantworte deine Fragen zur **10 Stunden Woche**: wie das Konzept funktioniert, was du brauchst und wie du ein Erstgespräch bekommst.",
+  chips: ["Wie funktioniert das Konzept?", "Ich habe keine Erfahrung im Vertrieb", "Was verdient man?", "Erstgespräch anfragen"],
+  cta: { label: "Erstgespräch anfragen →", url: "https://denisemizurov.die10stundenwoche.com/#BEWERBUNG" },
+  products: {},
+  bot: "d10sw",
+  faq: [
+    { k:["funktioniert","konzept","was ist","wie geht","erklär","ablauf"], a:"Die **10 Stunden Woche** ist ein Network-Marketing-Konzept, aufgebaut seit 2014. Über eine fertige Online-Infrastruktur baust du mit Konzepten aus **Beauty, Sport und Gesundheit** ein eigenes Standbein auf, mit rund 10 Stunden pro Woche, ortsunabhängig. Du bekommst eine kostenlose Ausbildung und fixfertige Konzepte für den Start.\nWas ist deine aktuelle Ausgangslage?" },
+    { k:["erfahrung","vertrieb","verkauf","netzwerk","keine zeit","kann ich das"], a:"Genau dafür ist das System gebaut: **keine Zeit, keine Erfahrung, kein Netzwerk** sind die drei Sätze, die fast immer kommen. Du brauchst kein Lager, keine eigene Website und keine Vertriebserfahrung. Was du brauchst: 10 Stunden pro Woche, Handy oder Laptop, ein starkes Warum und Lernbereitschaft. Die Ausbildung ist kostenlos." },
+    { k:["verdien","einkommen","geld","gehalt","provision","vergütung","zahlen","wie viel"], a:"Konkrete Zahlen nennen wir bewusst nicht. Was entsteht, hängt von deinem Einsatz ab und ist von Partner zu Partner verschieden. Den **vollständigen Vergütungsplan** bekommst du transparent im Erstgespräch mit Denise. [[cta]]" },
+    { k:["kosten","investition","startkapital","bezahlen","gebühr","preis"], a:"Zu Kosten und Start steht auf der Website nichts Konkretes, das klärt Denise offen mit dir im **Erstgespräch**, inklusive Geschäftspräsentation. [[cta]]" },
+    { k:["termin","erstgespräch","erstgespraech","gespräch","bewerb","anmelden","kontakt","start"], a:"So geht's: Du füllst das kurze Kontaktformular aus (Name, WhatsApp, E-Mail, Wohnort, Alter, Beruf, Motivation). Denise meldet sich **persönlich**, du bekommst die offizielle Geschäftspräsentation und ihr entwickelt gemeinsam deinen Fahrplan. [[cta]]" },
+    { k:["familie","kind","mama","papa","eltern","mutter"], a:"Viele Partner sind Eltern, z. B. **Familie Mock** oder **Liana B.**, die heute Fulltime-Mama ist. Die Online-Infrastruktur ist flexibel: du arbeitest abends, am Wochenende oder in den Lücken deines Alltags. Wie viel Zeit hast du realistisch pro Woche?" },
+    { k:["job","vollzeit","karriere","nebenbei","arbeit"], a:"Das Konzept ist auf **rund 10 Stunden pro Woche** ausgelegt, also gut neben einem Job machbar, ohne feste Zeiten oder Büro. Fabio S. hat als IT-Manager nebenbei begonnen. Was wäre dein Warum für ein zweites Standbein?" },
+    { k:["seriös","serioes","network","mlm","pyramide","schneeball","echt"], a:"Ja, es ist **Network-Marketing**, das sagen wir offen. Seit 2014 aufgebaut, Lizenznehmer von über 200 Produkten, aktiv in über 16 Ländern, und die 10 Stunden Woche war auf dem Titel des Wirtschaftsmagazins **FOUNDERS**. Alle Details, auch zur Vergütung, bekommst du transparent im Erstgespräch. [[cta]]" },
+    { k:["produkt","beauty","sport","gesundheit"], a:"Die Konzepte kommen aus den Bereichen **Beauty, Sport und Gesundheit**, mit über 200 lizenzierten Produkten. Welche konkret, zeigt dir Denise in der Geschäftspräsentation." },
+    { k:["pepi","gründer","denise","wer"], a:"Gegründet wurde die 10 Stunden Woche von **Coach Pepi**. **Denise Mizurov** ist selbständige Partnerin und betreut dich persönlich, von Dubai aus." },
+    { k:["land","länder","ausland","schweiz","österreich","ortsunabhängig"], a:"Die 10 Stunden Woche ist in **über 16 Ländern** aktiv und komplett online, du kannst also ortsunabhängig arbeiten." }
+  ],
+  fallback: "Gute Frage! Das beantwortet Denise am besten persönlich im Erstgespräch. Du kannst mich aber gern zu Konzept, Ablauf, Voraussetzungen oder Erfahrungen fragen. [[cta]]"
+};
+</script>
+<script src="/demo/assets/chat.js"></script>
+</body>
+</html>

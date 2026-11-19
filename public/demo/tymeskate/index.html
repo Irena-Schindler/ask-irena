@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TYME Skate Assistant</title>
+<meta name="description" content="Pilot: KI-Chatbot für TYME Skateboards">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/demo/tymeskate/img/tyme_logo.png">
+<link rel="stylesheet" href="/demo/assets/chat.css">
+<style>
+/* Layout: the TYME shop front, reduced to header + hero + deck row, with the pilot chat docked bottom-right.
+   Single light theme on purpose: it mirrors the brand's paper-beige storefront. */
+:root{
+  color-scheme:light;
+  --paper:#F1EFE8; --ink:#0B0B0B; --muted:#5E5A50; --line:#D9D4C7; --card:#FBFAF6; --sand:#E7E2D5;
+  --serif:"Libre Baskerville",Georgia,"Times New Roman",serif;
+  --sans:"Work Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* chat widget tokens */
+  --cb-font:var(--sans); --cb-head-font:var(--serif); --cb-fg:var(--ink); --cb-bg:var(--paper);
+  --cb-head-bg:var(--ink); --cb-head-fg:#F1EFE8; --cb-ava-bg:#F1EFE8; --cb-border:var(--line); --cb-hover:rgba(255,255,255,.12);
+  --cb-bot-bubble:#FFFFFF; --cb-bot-fg:var(--ink); --cb-user-bubble:var(--ink); --cb-user-fg:#F1EFE8;
+  --cb-accent:var(--ink); --cb-accent-fg:#F1EFE8; --cb-chip-border:#B9B2A2; --cb-card-bg:#FFFFFF; --cb-card-img:var(--sand);
+  --cb-input-bg:#FFFFFF; --cb-radius:4px; --cb-bubble-radius:2px 14px 14px 14px; --cb-btn-radius:2px;
+}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.pilot{background:var(--ink);color:var(--paper);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.pilot .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:8px}
+.pilot a{color:inherit}
+.ship{text-align:center;font-family:var(--serif);font-size:12px;padding-block:9px;border-bottom:1px solid var(--line)}
+header.site .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding-block:18px}
+header.site nav{display:flex;gap:22px;font-family:var(--serif);font-size:12.5px;letter-spacing:.08em;flex-wrap:wrap}
+header.site nav a{color:var(--ink);text-decoration:none}
+header.site img{height:44px;width:auto;grid-column:2}
+.r{justify-self:end;font-family:var(--serif);font-size:12.5px;letter-spacing:.08em}
+.hero{padding-block:56px 40px;border-top:1px solid var(--line)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:center}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4.4vw,52px);line-height:1.12;margin:14px 0 18px;text-wrap:balance}
+h1 em{font-style:italic}
+.lead{font-size:16.5px;line-height:1.65;color:var(--muted);max-width:52ch;margin:0 0 26px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-block;padding:13px 22px;font-family:var(--serif);font-size:13px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--ink);color:var(--ink);background:transparent;cursor:pointer}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.decks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.deck{background:var(--card);border:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--ink)}
+.deck img{aspect-ratio:1;object-fit:contain;width:100%;background:var(--sand)}
+.deck b{font-family:var(--serif);font-size:13px;letter-spacing:.06em}
+.deck span{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.usp{border-block:1px solid var(--line);padding-block:26px}
+.usp .wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.usp div{font-family:var(--serif);font-size:15px}
+.usp small{display:block;font-family:var(--sans);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.about{padding-block:48px 140px}
+.about .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px}
+.about h2{font-family:var(--serif);font-weight:400;font-size:26px;margin:0 0 12px}
+.about p{line-height:1.7;color:var(--muted);margin:0 0 12px;max-width:60ch}
+.note{background:var(--card);border:1px solid var(--line);padding:20px 22px}
+.note h3{font-family:var(--serif);font-size:16px;margin:0 0 10px;font-weight:700}
+.note ul{margin:0;padding-left:18px;line-height:1.7;color:var(--muted)}
+@media (max-width:860px){
+  header.site nav{display:none}
+  header.site .wrap{grid-template-columns:1fr auto 1fr}
+  .hero .wrap,.about .wrap{grid-template-columns:1fr}
+  .usp .wrap{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="pilot"><div class="wrap"><span>Pilot · KI-Chatbot für tymeskateboards.com</span><span>Vorschau, nicht der Live-Shop</span></div></div>
+<div class="ship">Free shipping in Germany on orders over 100€</div>
+<header class="site"><div class="wrap">
+  <nav aria-label="Shop"><a href="https://tymeskateboards.com/" target="_blank" rel="noopener">HOME</a><a href="https://tymeskateboards.com/pages/team" target="_blank" rel="noopener">TEAM</a><a href="https://tymeskateboards.com/collections/all-products" target="_blank" rel="noopener">ALL PRODUCTS</a><a href="https://tymeskateboards.com/pages/about-tyme" target="_blank" rel="noopener">ABOUT TYME</a></nav>
+  <img src="/demo/tymeskate/img/tyme_logo.png" alt="TYME Skateboards">
+  <div class="r">EUR €</div>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div>
+    <div class="eyebrow">Skater owned · since 2021</div>
+    <h1>Quality decks for more <em>pop</em> and durability.</h1>
+    <p class="lead">Canadian maple, designed in Germany, built by pro skater Alex Mizurov. Not sure which width fits your skating? Ask the TYME assistant, it knows every deck, size and shipping rule in the shop.</p>
+    <div class="btns">
+      <button class="btn solid" data-open-chat data-q="Which deck size fits me? I mostly skate street.">Find my deck size</button>
+      <a class="btn" href="https://tymeskateboards.com/collections/all-products" target="_blank" rel="noopener">Shop all</a>
+    </div>
+  </div>
+  <div class="decks">
+    <a class="deck" href="https://tymeskateboards.com/products/martini" target="_blank" rel="noopener"><img src="/demo/tymeskate/img/martini.png" alt="Martini deck"><b>MARTINI</b><span>65,00 €</span></a>
+    <a class="deck" href="https://tymeskateboards.com/products/hourglass" target="_blank" rel="noopener"><img src="/demo/tymeskate/img/hourglass.png" alt="Hourglass deck"><b>HOURGLASS</b><span>65,00 €</span></a>
+    <a class="deck" href="https://tymeskateboards.com/products/falcon" target="_blank" rel="noopener"><img src="/demo/tymeskate/img/falcon.png" alt="Falcon deck"><b>FALCON</b><span>65,00 €</span></a>
+  </div>
+</div></section>
+
+<section class="usp"><div class="wrap">
+  <div>Quality<small>Transparency</small></div>
+  <div>Designed<small>in Germany</small></div>
+  <div>Upcycling<small>Turn old into new</small></div>
+  <div>Canadian Maple<small>For more pop</small></div>
+</div></section>
+
+<section class="about"><div class="wrap">
+  <div>
+    <h2>Philosophy</h2>
+    <p>"With over 21 years of experience and passion for skateboarding I created a skater owned board brand." Alex Mizurov, founder.</p>
+    <p>The Y in TYME is an hourglass: your time is valuable, so the shop helps you pick the right setup and progress faster.</p>
+  </div>
+  <div class="note">
+    <h3>Was der Pilot kann</h3>
+    <ul>
+      <li>Beantwortet Fragen zu Decks, Größen, T-Shirts, Sets und Preisen</li>
+      <li>Empfiehlt passende Boards mit Produktkarten und Link in den Shop</li>
+      <li>Kennt Versand, Lieferzeiten, Rückgabe und Upcycling-Aktion</li>
+      <li>Antwortet in der Sprache des Kunden (DE, EN, ES, AR …)</li>
+    </ul>
+  </div>
+</div></section>
+
+<div class="cb" id="cb"></div>
+
+<script>
+window.BOT = {
+  name: "TYME Assistant",
+  avatar: "/demo/tymeskate/img/tyme_logo.png",
+  t: { online:"Online · antwortet sofort", reset:"Neu starten", minimize:"Minimieren",
+       placeholder:"Frag nach Decks, Größen, Versand …", send:"Senden", open:"Chat öffnen", foot:"Pilot von AIDEN · Antworten ohne Gewähr, verbindlich ist der Shop" },
+  greeting: "Hey, welcome to **TYME Skateboards**! 🛹\nIch helfe dir bei Decks, Größen, T-Shirts, Versand und Rückgabe. Frag einfach auf Deutsch oder Englisch.",
+  chips: ["Welche Deckgröße passt zu mir?", "Was kostet der Versand?", "Zeig mir das All-in-1-Set", "Wer steckt hinter TYME?"],
+  cta: null,
+  products: {
+    "martini":   { name:"MARTINI", price:"65 € · 8.0–8.5", img:"/demo/tymeskate/img/martini.png", url:"https://tymeskateboards.com/products/martini" },
+    "hourglass": { name:"HOURGLASS", price:"65 € · 8.0–8.5", img:"/demo/tymeskate/img/hourglass.png", url:"https://tymeskateboards.com/products/hourglass" },
+    "falcon":    { name:"FALCON", price:"65 € · 8.0–8.5", img:"/demo/tymeskate/img/falcon.png", url:"https://tymeskateboards.com/products/falcon" },
+    "dubai":     { name:"DUBAI – World Series", price:"65 € · 8.0–8.5", img:"/demo/tymeskate/img/dubai.png", url:"https://tymeskateboards.com/products/dubai-world-series" },
+    "buenos-aires": { name:"BUENOS AIRES – World Series", price:"65 € · 8.0–8.5", img:"/demo/tymeskate/img/buenos.png", url:"https://tymeskateboards.com/products/buenos-aires-world-series" },
+    "berlin":    { name:"BERLIN – World Series", price:"65 € · nur noch 8.375", img:"/demo/tymeskate/img/berlin.png", url:"https://tymeskateboards.com/products/berlin-world-series" },
+    "set":       { name:"ALL IN 1 SET", price:"180 € statt 195 €", img:"/demo/tymeskate/img/hourglass.png", url:"https://tymeskateboards.com/products/all-in-1-get-free-griptape" },
+    "tee-cut":   { name:"CUT Tee (white)", price:"30 € · S–XL", img:"", url:"https://tymeskateboards.com/products/cut" },
+    "tee-martini": { name:"NOT YOUR AVERAGE \"MARTINI\" Tee", price:"30 € · S–XL", img:"", url:"https://tymeskateboards.com/products/not-your-average" },
+    "tee-21":    { name:"٢١ TWENTY ONE Tee", price:"30 € · S–XL", img:"", url:"https://tymeskateboards.com/products/21" }
+  },
+  bot: "tyme",
+  faq: [
+    { k:["größe","groesse","size","breite","width","welche deck","fits"], a:"Kurze Orientierung zu den Breiten:\n- **8.0–8.125**: leicht und wendig, ideal für Street und Flip-Tricks\n- **8.25**: der Allrounder für Street und Park\n- **8.375–8.5**: mehr Standfläche, stark in Bowl, Transition und bei großen Füßen\nAlle aktuellen Decks gibt es in 8.0 bis 8.5. [[product:hourglass]] [[product:martini]] [[product:falcon]]" },
+    { k:["versand","shipping","lieferung","liefer","delivery","dhl","kosten"], a:"Wir versenden mit **DHL aus Deutschland**. Ab **100 €** ist der Versand in Deutschland kostenlos, ein einzelnes Deck kostet 4,95 € (DE) bzw. 19,50 € (EU). Lieferzeit: Deutschland 2–4 Werktage, Nachbarländer 2–5, Schweiz 1–2 Tage länger (Zoll), restliches Europa 5–15 Werktage." },
+    { k:["rückgabe","rueckgabe","return","umtausch","refund","zurück"], a:"Du hast **14 Tage** ab Erhalt. Der Artikel muss unbenutzt und originalverpackt sein. Melde die Rückgabe vorher an info@tymeskateboards.com, dann bekommst du ein Rücksendeetikett. Sale-Artikel und Gutscheine sind ausgenommen." },
+    { k:["set","all in","bundle","3 decks","drei"], a:"Das **ALL IN 1 SET**: drei Decks nach Wahl (Grafik und Größe frei kombinierbar) für **180 € statt 195 €**, inklusive 3 Grizzly Griptapes. Perfekt auch zum Teilen mit Freunden. Außerdem läuft der **Bundle Sale: Deck & Shirt für 80 €**. [[product:set]]" },
+    { k:["shirt","tee","t-shirt","kleidung","apparel"], a:"Unsere Tees kosten je **30 €** (S–XL, relaxed skate fit): CUT in Weiß, NOT YOUR AVERAGE \"MARTINI\" in Off-White und ٢١ TWENTY ONE schwarz auf schwarz. Im Bundle mit einem Deck zahlst du nur 80 €. [[product:tee-cut]] [[product:tee-martini]] [[product:tee-21]]" },
+    { k:["wer","alex","denise","gründer","founder","about","über","team","marke"], a:"TYME wurde **2021 von Denise & Alex Mizurov** gegründet. Alex skatet seit 2000 und gewann 2006 die Europameisterschaft in Basel und Game of SKATE in San Diego. Das Y in TYME steht für eine Sanduhr: deine Zeit ist wertvoll." },
+    { k:["holz","ahorn","maple","qualität","quality","pop"], a:"Wir verwenden ausschließlich **kanadischen Ahorn** für mehr Pop und Haltbarkeit. Designed in Germany, gefertigt in Berlin." },
+    { k:["world series","dubai","berlin","buenos"], a:"Die **World Series**: DUBAI (Burj Khalifa), BUENOS AIRES (Obelisk) und BERLIN (Fernsehturm), je 65 €. Berlin gibt es nur noch in 8.375. [[product:dubai]] [[product:buenos-aires]] [[product:berlin]]" },
+    { k:["upcycling","alte boards","old","flow"], a:"Bei **Turn old into new** werden alte Boards von Flow Handwerk zu Möbeln. Sammle 3 alte TYME-Decks: wir übernehmen den Versand und du bekommst 10 % auf Flow-Handwerk-Produkte." },
+    { k:["zahlung","payment","paypal","bezahlen","karte"], a:"Du kannst sicher mit allen gängigen Zahlungsmethoden bezahlen. Die verfügbaren Optionen siehst du direkt im Checkout." },
+    { k:["kontakt","contact","email","mail","bestellung","order"], a:"Schreib uns an **info@tymeskateboards.com** oder über das [Kontaktformular](https://tymeskateboards.com/pages/contact). Zu konkreten Bestellungen kann ich hier im Pilot noch keinen Status abrufen." },
+    { k:["uhr","clock","timepiece"], a:"Der **TIMEPIECE** ist ein Skateboard als lautlose Wanduhr (180 €), aktuell leider ausverkauft." }
+  ],
+  fallback: "Gute Frage! Dazu habe ich im Demo-Modus keine sichere Antwort. Schreib dem Team gern an **info@tymeskateboards.com**, oder frag mich nach Decks, Größen, Versand, Rückgabe oder T-Shirts."
+};
+</script>
+<script src="/demo/assets/chat.js"></script>
+</body>
+</html>
