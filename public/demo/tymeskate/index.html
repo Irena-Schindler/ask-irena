@@ -52,7 +52,15 @@ h1 em{font-style:italic}
 .usp .wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
 .usp div{font-family:var(--serif);font-size:15px}
 .usp small{display:block;font-family:var(--sans);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px}
-.about{padding-block:48px 140px}
+.about{padding-block:48px}
+.more{padding-block:8px 140px}
+.more h2{font-family:var(--serif);font-weight:400;font-size:26px;margin:0 0 8px;text-wrap:balance}
+.more-sub{color:var(--muted);line-height:1.65;max-width:70ch;margin:0 0 24px}
+.more-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px;border-top:1px solid var(--ink)}
+.more-grid div{padding-block:16px;border-bottom:1px solid var(--line)}
+.more-grid h3{font-family:var(--serif);font-size:15px;font-weight:700;margin:0 0 4px}
+.more-grid p{margin:0;color:var(--muted);line-height:1.55;font-size:14.5px}
+@media (max-width:860px){.more-grid{grid-template-columns:1fr}}
 .about .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px}
 .about h2{font-family:var(--serif);font-weight:400;font-size:26px;margin:0 0 12px}
 .about p{line-height:1.7;color:var(--muted);margin:0 0 12px;max-width:60ch}
@@ -114,6 +122,21 @@ h1 em{font-style:italic}
       <li>Kennt Versand, Lieferzeiten, Rückgabe und Upcycling-Aktion</li>
       <li>Antwortet in der Sprache des Kunden (DE, EN, ES, AR …)</li>
     </ul>
+  </div>
+</div></section>
+
+<section class="more"><div class="wrap">
+  <h2>Was der fertige Bot zusätzlich übernehmen könnte</h2>
+  <p class="more-sub">Mit Anbindung an Shop, Versand und eure Kanäle wird aus dem Auskunfts-Bot ein Verkaufs- und Service-Mitarbeiter, der rund um die Uhr arbeitet.</p>
+  <div class="more-grid">
+    <div><h3>Bestellstatus &amp; Sendungsverfolgung</h3><p>Beantwortet „Wo ist mein Paket?“ direkt, über die Anbindung an Shopify und DHL.</p></div>
+    <div><h3>Live-Lagerbestand</h3><p>Zeigt in Echtzeit, welche Deckgröße noch verfügbar ist, statt allgemeiner Hinweise.</p></div>
+    <div><h3>Direkt in den Warenkorb</h3><p>Legt das empfohlene Deck in der passenden Größe in den Warenkorb und führt zum Checkout.</p></div>
+    <div><h3>Retouren anstoßen</h3><p>Nimmt Rückgaben im Chat auf und übergibt dem Team alle Daten für das Rücksendeetikett.</p></div>
+    <div><h3>Newsletter &amp; Erstkäufer-Rabatt</h3><p>Anmeldung direkt im Chat, Rabattcode nach euren Regeln.</p></div>
+    <div><h3>Instagram &amp; WhatsApp</h3><p>Derselbe Assistent beantwortet Direktnachrichten, mit demselben Wissen wie im Shop.</p></div>
+    <div><h3>Übergabe an Alex &amp; Denise</h3><p>Bei Kooperationen, Teamanfragen oder Sonderwünschen Weiterleitung mit dem ganzen Gesprächsverlauf.</p></div>
+    <div><h3>Auswertung</h3><p>Zeigt, welche Fragen am häufigsten kommen und wo Kunden vor dem Kauf abspringen.</p></div>
   </div>
 </div></section>
 

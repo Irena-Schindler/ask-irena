@@ -50,7 +50,12 @@ h2{font-family:var(--display);font-weight:800;font-size:clamp(20px,2.6vw,30px);m
 .need{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:8px}
 .need div{border-top:3px solid var(--yellow);padding-top:12px;font-family:var(--display);font-weight:700;font-size:17px}
 .need small{display:block;font-family:var(--body);font-weight:400;font-size:14px;color:var(--muted);margin-top:4px}
-.note{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:120px}
+.note{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:56px}
+.more-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.more-grid div{border-left:3px solid var(--yellow);padding:4px 0 4px 14px}
+.more-grid h3{font-family:var(--display);font-size:16px;font-weight:700;margin:0 0 4px}
+.more-grid p{margin:0;color:var(--muted);line-height:1.5;font-size:15px}
+@media (max-width:820px){.more-grid{grid-template-columns:1fr}}
 .note h3{font-family:var(--display);margin:0 0 10px;font-size:18px}
 .note ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.7}
 .quote{font-family:var(--display);font-weight:700;font-size:clamp(18px,2.4vw,24px);border-left:4px solid var(--yellow);padding-left:16px;margin:0 0 36px;max-width:40ch}
@@ -101,6 +106,19 @@ h2{font-family:var(--display);font-weight:800;font-size:clamp(20px,2.6vw,30px);m
       <li>Führt Interessierte zum Kontaktformular für das Erstgespräch mit Denise</li>
     </ul>
   </div>
+  <h2>Was der fertige Bot zusätzlich übernehmen könnte</h2>
+  <p class="sub">Angebunden an Kalender, WhatsApp und CRM qualifiziert der Assistent Interessenten rund um die Uhr vor, und Denise spricht nur noch mit Menschen, die wirklich wollen.</p>
+  <div class="more-grid">
+    <div><h3>Lead direkt im Chat erfassen</h3><p>Name, WhatsApp, Wohnort und Motivation im Gespräch statt im Formular, sofort bei Denise bzw. im CRM.</p></div>
+    <div><h3>Erstgespräch direkt buchen</h3><p>Freie Termine aus Denises Kalender anbieten und den Termin samt Bestätigung eintragen.</p></div>
+    <div><h3>Vorqualifizierung</h3><p>Kurzprofil für Denise vor dem Gespräch: Typ, Zeitbudget, Ausgangslage und Warum.</p></div>
+    <div><h3>Sofort-Benachrichtigung</h3><p>Neuer Lead oder Termin per WhatsApp, Telegram oder E-Mail an Denise.</p></div>
+    <div><h3>Erinnerung &amp; Nachfassen</h3><p>Termin-Erinnerung und freundliches Follow-up per WhatsApp, nur mit Einwilligung.</p></div>
+    <div><h3>KI-Rückruf am Telefon</h3><p>Ein Voice-Assistent ruft neue Interessenten in wenigen Minuten zurück und vereinbart das Erstgespräch.</p></div>
+    <div><h3>Instagram, WhatsApp &amp; 16+ Länder</h3><p>Derselbe Assistent beantwortet Direktnachrichten, in der Sprache des Interessenten.</p></div>
+    <div><h3>Sauber &amp; nachvollziehbar</h3><p>DSGVO-Einwilligung im Chat, feste Regeln gegen Einkommensversprechen, Gesprächsprotokolle für Denise.</p></div>
+  </div>
+  <div style="height:120px"></div>
 </div></section>
 
 <div class="cb" id="cb"></div>
