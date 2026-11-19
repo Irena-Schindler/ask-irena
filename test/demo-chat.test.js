@@ -36,6 +36,8 @@ test("model answer uses the bot's own system prompt and cleaned history", async 
   assert.match(r.answer, /\[\[product:martini\]\]/);
   assert.equal(seen.system[0].text, DEMO_BOTS.tyme.system);
   assert.equal(seen.system[0].cache_control.type, "ephemeral");
+  assert.equal(seen.output_config.effort, "low");
+  assert.ok(seen.max_tokens >= 2000);
   assert.deepEqual(seen.messages.map((m) => m.role), ["user", "assistant", "user"]);
   delete process.env.ANTHROPIC_API_KEY;
 });

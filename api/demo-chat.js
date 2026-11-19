@@ -20,7 +20,10 @@ export async function demoAnswer(bot, message, history = [], fetchImpl = fetch) 
     method: "POST",
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
     // system as cacheable block: the long product catalogs are billed at the cache rate on follow-up turns
-    body: JSON.stringify({ model: process.env.DEMO_LLM_MODEL || process.env.LLM_MODEL || "claude-haiku-5-5", max_tokens: 700,
+    // Haiku 5.5 thinks adaptively by default (effort "medium"); a chat answer needs little reasoning, and the
+    // thinking tokens count against max_tokens, so keep effort low and leave room for thinking plus the answer.
+    body: JSON.stringify({ model: process.env.DEMO_LLM_MODEL || process.env.LLM_MODEL || "claude-haiku-5-5", max_tokens: 3000,
+      output_config: { effort: "low" },
       system: [{ type: "text", text: cfg.system, cache_control: { type: "ephemeral" } }], messages: msgs }),
   });
   if (!r.ok) {
