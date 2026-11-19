@@ -48,9 +48,17 @@
 .cb-send{flex:none;width:42px;border:0;border-radius:var(--cb-btn-radius);background:var(--cb-accent);color:var(--cb-accent-fg);cursor:pointer;display:grid;place-items:center}
 .cb-send:disabled{opacity:.5;cursor:default}
 .cb-foot{font-size:10.5px;text-align:center;opacity:.55;padding:0 12px 8px}
-.cb-launch{width:60px;height:60px;border-radius:50%;border:0;background:var(--cb-accent);color:var(--cb-accent-fg);box-shadow:0 10px 30px rgba(0,0,0,.25);cursor:pointer;display:grid;place-items:center;margin-left:auto}
-.cb-launch[hidden]{display:none!important}
+.cb-launchrow{display:flex;align-items:center;justify-content:flex-end;gap:12px}
+.cb-launchrow[hidden]{display:none!important}
+.cb-launch{flex:none;width:60px;height:60px;border-radius:50%;border:0;background:var(--cb-accent);color:var(--cb-accent-fg);box-shadow:0 10px 30px rgba(0,0,0,.25);cursor:pointer;display:grid;place-items:center}
+.cb-teaser{position:relative;display:flex;align-items:center;max-width:min(260px,calc(100vw - 110px));background:var(--cb-bg);color:var(--cb-fg);border:1px solid var(--cb-border);border-radius:16px 16px 4px 16px;box-shadow:0 10px 30px rgba(0,0,0,.18);animation:cbin .35s ease-out both}
+.cb-teaser[hidden]{display:none!important}
+.cb-teaser-text{background:none;border:0;color:inherit;font:inherit;font-size:14.5px;line-height:1.35;text-align:left;padding:11px 8px 11px 15px;cursor:pointer}
+.cb-teaser-text b{font-family:var(--cb-head-font)}
+.cb-teaser-x{flex:none;align-self:flex-start;background:none;border:0;color:inherit;opacity:.5;font-size:18px;line-height:1;width:28px;height:28px;margin:4px 4px 0 0;cursor:pointer;border-radius:50%}
+.cb-teaser-x:hover,.cb-teaser-x:focus-visible{opacity:1;background:var(--cb-hover)}
+@keyframes cbin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 button:focus-visible,a:focus-visible{outline:2px solid var(--cb-accent);outline-offset:2px}
 @media (min-width:1100px){body{padding-right:420px}}
 @media (max-width:480px){.cb{right:max(8px,env(safe-area-inset-right,0px));bottom:max(8px,env(safe-area-inset-bottom,0px))}.cb-panel{width:calc(100vw - 16px);height:calc(100vh - 90px)}}
-@media (prefers-reduced-motion:reduce){.cb-typing span{animation:none}.cb-log{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){.cb-teaser{animation:none}.cb-typing span{animation:none}.cb-log{scroll-behavior:auto}}

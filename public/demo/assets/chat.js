@@ -19,7 +19,11 @@
       '<button class="cb-send" id="cb-send" aria-label="' + C.t.send + '">' + ICON_SEND + '</button></form>' +
       '<div class="cb-foot">' + C.t.foot + '</div>' +
     '</section>' +
-    '<button class="cb-launch" id="cb-launch" hidden aria-label="' + C.t.open + '">' + ICON_CHAT + '</button>';
+    '<div class="cb-launchrow" id="cb-launchrow" hidden>' +
+      '<div class="cb-teaser" id="cb-teaser"><button type="button" class="cb-teaser-text" id="cb-teaser-open">' + C.t.teaser + '</button>' +
+      '<button type="button" class="cb-teaser-x" id="cb-teaser-x" aria-label="' + C.t.hideTeaser + '">×</button></div>' +
+      '<button class="cb-launch" id="cb-launch" aria-label="' + C.t.open + '">' + ICON_CHAT + '</button>' +
+    '</div>';
 
   var $ = function (id) { return document.getElementById(id); };
   var log = $('cb-log'), input = $('cb-input'), sendBtn = $('cb-send'), chipsEl = $('cb-chips');
@@ -140,11 +144,17 @@
 
   $('cb-form').addEventListener('submit', function (e) { e.preventDefault(); var v = input.value; input.value = ''; send(v); });
   $('cb-reset').onclick = start;
-  $('cb-min').onclick = function () { $('cb-panel').hidden = true; $('cb-launch').hidden = false; $('cb-launch').focus(); };
-  $('cb-launch').onclick = function () { $('cb-panel').hidden = false; $('cb-launch').hidden = true; input.focus(); };
+  function minimize() { $('cb-panel').hidden = true; $('cb-launchrow').hidden = false; }
+  function openChat() { $('cb-panel').hidden = false; $('cb-launchrow').hidden = true; input.focus(); }
+  $('cb-min').onclick = function () { minimize(); $('cb-launch').focus(); };
+  $('cb-launch').onclick = openChat;
+  $('cb-teaser-open').onclick = openChat;
+  $('cb-teaser-x').onclick = function () { $('cb-teaser').hidden = true; $('cb-launch').focus(); };
   document.querySelectorAll('[data-open-chat]').forEach(function (b) {
-    b.addEventListener('click', function (e) { e.preventDefault(); $('cb-launch').onclick(); if (b.dataset.q) send(b.dataset.q); });
+    b.addEventListener('click', function (e) { e.preventDefault(); openChat(); if (b.dataset.q) send(b.dataset.q); });
   });
 
   start();
+  // On phones the open panel would cover the page: start with the button and its greeting bubble.
+  if (window.matchMedia && window.matchMedia('(max-width: 600px)').matches) minimize();
 })();
