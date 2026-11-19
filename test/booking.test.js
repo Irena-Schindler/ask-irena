@@ -61,5 +61,23 @@ test("booking api: token required, rechecks slot, creates meeting and mails both
   const mails = calls.filter(([u]) => u.includes("resend")).map(([, b]) => JSON.parse(b));
   assert.deepEqual(mails.map((m) => m.to[0]).sort(), ["irena@aiden.ae", "max@firma.de"]);
   assert.ok(mails.find((m) => m.to[0] === "max@firma.de").attachments[0].filename.endsWith(".ics"));
+  assert.equal(calls.filter(([u]) => u.includes("telegram")).length, 0, "ohne Telegram-Variablen kein Hinweis");
   for (const k of ["MS_TENANT_ID", "MS_CLIENT_ID", "MS_CLIENT_SECRET", "MS_CALENDAR_USER", "RESEND_API_KEY", "BOOKING_FROM", "BOOKING_TO"]) delete process.env[k];
+});
+
+test("Telegram-Hinweis bei Buchung: nur Terminart, Zeit und Vorname, Fehler stören nicht", async () => {
+  const { bookingNotice, sendBookingNotice } = await import("../lib/telegram.js");
+  const start = Date.parse("2026-11-10T08:00:00Z");
+  const text = bookingNotice({ typeName: "Kennenlerngespräch (irena-schindler.com)", start, name: "Max Muster" });
+  assert.match(text, /Neue Buchung: Kennenlerngespräch/);
+  assert.match(text, /12:00 Uhr \(Dubai\) \/ .*09:00 Uhr \(DE\)/);
+  assert.match(text, /Gast: Max$/);
+  assert.ok(!text.includes("Muster"), "kein Nachname");
+  const sent = [];
+  const env = { SCHUTZ_TELEGRAM_TOKEN: "t0k", SCHUTZ_TELEGRAM_CHAT: "42" };
+  assert.equal(await sendBookingNotice({ typeName: "X", start, name: "Ann" }, async (u, o) => { sent.push([u, JSON.parse(o.body)]); return { ok: true }; }, env), true);
+  assert.match(sent[0][0], /api\.telegram\.org\/bott0k\/sendMessage/);
+  assert.equal(sent[0][1].chat_id, "42");
+  assert.equal(await sendBookingNotice({ typeName: "X", start, name: "Ann" }, async () => { throw new Error("offline"); }, env), false);
+  assert.equal(await sendBookingNotice({ typeName: "X", start, name: "Ann" }, async () => ({ ok: true }), {}), false, "ohne Variablen nichts senden");
 });

@@ -28,3 +28,4 @@ node dev-server.js       # http://localhost:3000 (FAQ mode without ANTHROPIC_API
 ```
 
 Deploy on Vercel: set `ANTHROPIC_API_KEY` (and optionally `LLM_MODEL`) as environment variables.
+Booking notice on Telegram (same bot as the customer portal): `SCHUTZ_TELEGRAM_TOKEN` and `SCHUTZ_TELEGRAM_CHAT` (or `BOOKING_TELEGRAM_CHAT`); only booking type, time and first name are sent.

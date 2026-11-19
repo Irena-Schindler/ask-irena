@@ -3,6 +3,7 @@
 // Only visitors who passed the chat gate (signed chatToken) can see slots or book.
 import { availableSlots, createMeeting, enabled, validTz } from "../lib/calendar.js";
 import { sendBookingMails } from "../lib/lead.js";
+import { sendBookingNotice } from "../lib/telegram.js";
 import { rateLimited } from "../lib/guard.js";
 import { verify } from "../lib/token.js";
 
@@ -31,6 +32,7 @@ export default async function handler(req, res, deps = {}) {
       const notes = `<p><b>Gebucht über irena-schindler.com (AIrena)</b></p><p>Name: ${esc(lead.name)}<br>E-Mail: ${esc(lead.email)}<br>Sprache: ${lead.lang}<br>Zeitzone des Gastes: ${esc(tz)}</p><p>Der Gast hat die Bestätigung mit Teams-Link per E-Mail erhalten und ist nicht als Teilnehmer eingetragen.</p>`;
       const m = await createMeeting({ start: body.start, lead, sessionKey: body.chatToken, notes }, fetchImpl);
       await sendBookingMails(lead, m, tz, fetchImpl).catch((e) => console.error("booking mails failed", e));
+      await sendBookingNotice({ typeName: "Kennenlerngespräch (irena-schindler.com)", start: m.start, name: lead.name }, fetchImpl);
       return res.status(200).json({ ok: true, start: new Date(m.start).toISOString(), joinUrl: m.joinUrl });
     }
     return res.status(400).json({ ok: false, reason: "action" });
