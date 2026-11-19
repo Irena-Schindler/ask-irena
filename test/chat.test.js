@@ -25,7 +25,7 @@ test("faq mode works without API key", async () => {
 
 test("unknown questions are not answered with invented facts", async () => {
   delete process.env.ANTHROPIC_API_KEY;
-  assert.match((await answer("What is her favourite football club?")).answer, /best discussed with Irena directly/);
+  assert.match((await answer("What is her favourite football club?")).answer, /happy to answer that personally/);
 });
 
 test("llm path sends profile, maps UNKNOWN and falls back on API errors", async () => {
@@ -34,7 +34,7 @@ test("llm path sends profile, maps UNKNOWN and falls back on API errors", async 
   const ok = async (_u, o) => { body = JSON.parse(o.body); return { ok: true, json: async () => ({ content: [{ type: "text", text: "UNKNOWN" }] }) }; };
   const r = await answer("Does she speak French?", [], ok);
   assert.match(body.system, /Konica Minolta/);
-  assert.match(r.answer, /best discussed with Irena directly/);
+  assert.match(r.answer, /happy to answer that personally/);
   const fail = async () => ({ ok: false });
   assert.equal((await answer("Is she available remote?", [], fail)).mode, "faq-fallback");
   delete process.env.ANTHROPIC_API_KEY;
@@ -51,5 +51,19 @@ test("truncated model output is trimmed to the last full sentence", async () => 
   process.env.ANTHROPIC_API_KEY = "test";
   const cut = async () => ({ ok: true, json: async () => ({ stop_reason: "max_tokens", content: [{ type: "text", text: "Erster Satz. Zweiter Sa" }] }) });
   assert.equal((await answer("Welche Voice-AI-Erfahrung hat sie?", [], cut)).answer, "Erster Satz.");
+  delete process.env.ANTHROPIC_API_KEY;
+});
+
+test("fixed answers and prompt stay positive", async () => {
+  const { BUSY, REFUSAL, START, UNKNOWN } = await import("../lib/guard.js");
+  for (const t of [REFUSAL, UNKNOWN, BUSY, START].flatMap((x) => [x.de, x.en]))
+    assert.doesNotMatch(t, /\b(only|nur|leider|unfortunately|can't|cannot|sorry)\b|weiß ich nicht/i);
+  process.env.ANTHROPIC_API_KEY = "test";
+  let body;
+  const ok = async (_u, o) => { body = JSON.parse(o.body); return { ok: true, json: async () => ({ content: [{ type: "text", text: "Gern." }] }) }; };
+  await answer("Was kann Irena für mein Unternehmen bauen?", [], ok);
+  assert.match(body.system, /ALWAYS POSITIVE/);
+  assert.match(body.system, /lead qualification/);
+  assert.match(body.system, /Microsoft Teams/);
   delete process.env.ANTHROPIC_API_KEY;
 });

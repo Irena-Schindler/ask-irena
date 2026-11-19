@@ -3,25 +3,25 @@
 (() => {
   const de = document.documentElement.lang === 'de';
   const T = de ? {
-    loading: 'Freie Termine werden geladen …', none: 'Gerade sind keine Termine frei. Schreiben Sie mir gern an <a href="mailto:irena@aiden.ae">irena@aiden.ae</a>.',
+    loading: 'Freie Termine werden geladen …', none: 'Gerade sind alle Termine vergeben. Schreiben Sie mir gern an <a href="mailto:irena@aiden.ae">irena@aiden.ae</a>, gemeinsam finden wir einen passenden Termin.',
     h: 'Termin wählen', sub: 'Kennenlerngespräch · 30 Minuten · Microsoft Teams · kostenlos', times: d => `Freie Zeiten am ${d}`,
     book: d => `${d} verbindlich buchen`, tz: z => `Alle Zeiten in Ihrer Zeitzone: ${z}`, as: (n, e) => `Sie buchen als <b>${n}</b> (${e}) · <a data-x>nicht Sie?</a>`,
     whoH: 'Kurz vorab', whoSub: 'Damit ich Ihnen die Bestätigung mit Teams-Link schicken kann.', name: 'Name', email: 'E-Mail',
     consent: 'Ich bin einverstanden, dass Name und E-Mail zur Terminvereinbarung verarbeitet werden (<a href="/datenschutz.html" target="_blank">Datenschutz</a>).',
     next: 'Weiter zu den Terminen', check: 'Sicherheitsprüfung läuft …',
-    err: {name: 'Bitte Ihren Namen eingeben.', email: 'Bitte eine gültige E-Mail eingeben.', consent: 'Bitte der Datenverarbeitung zustimmen.', rate: 'Zu viele Versuche, bitte später erneut.', bot: 'Sicherheitsprüfung fehlgeschlagen. Bitte Seite neu laden.',
-      taken: 'Dieser Termin wurde gerade vergeben. Bitte wählen Sie einen anderen.', fail: 'Das hat leider nicht geklappt. Bitte erneut versuchen oder an irena@aiden.ae schreiben.'},
+    err: {name: 'Bitte Ihren Namen eingeben.', email: 'Bitte eine gültige E-Mail eingeben.', consent: 'Bitte der Datenverarbeitung zustimmen.', rate: 'Danke für Ihre Geduld! Versuchen Sie es gern in ein paar Minuten noch einmal.', bot: 'Einmal kurz die Seite neu laden, dann geht es direkt weiter.',
+      taken: 'Diese Zeit hat gerade jemand anderes gewählt. Suchen Sie sich gern eine andere aus.', fail: 'Da hat kurz etwas gehakt. Versuchen Sie es gern noch einmal oder schreiben Sie an irena@aiden.ae.'},
     doneH: 'Ihr Termin steht!', done: (d, e) => `Wir sprechen uns am <b>${d}</b>. Die Bestätigung mit Teams-Link und Kalenderdatei ist unterwegs an <b>${e}</b>.`,
     doneP: 'Ich freue mich sehr darauf, Sie kennenzulernen!', back: 'Zurück zur Startseite', home: '/de/', locale: 'de-DE', wd: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'], uhr: ' Uhr',
   } : {
-    loading: 'Loading free slots…', none: 'No free slots right now. Feel free to write to <a href="mailto:irena@aiden.ae">irena@aiden.ae</a>.',
+    loading: 'Loading free slots…', none: 'All slots are taken right now. Feel free to write to <a href="mailto:irena@aiden.ae">irena@aiden.ae</a> and we will find a time together.',
     h: 'Pick a time', sub: 'Intro call · 30 minutes · Microsoft Teams · free', times: d => `Free times on ${d}`,
     book: d => `Book ${d}`, tz: z => `All times in your time zone: ${z}`, as: (n, e) => `Booking as <b>${n}</b> (${e}) · <a data-x>not you?</a>`,
     whoH: 'Quick intro', whoSub: 'So I can send you the confirmation with the Teams link.', name: 'Name', email: 'E-mail',
     consent: 'I agree that my name and e-mail are processed to schedule the call (<a href="/datenschutz.html" target="_blank">privacy</a>).',
     next: 'Continue to available times', check: 'Running security check…',
-    err: {name: 'Please enter your name.', email: 'Please enter a valid e-mail.', consent: 'Please accept the data processing.', rate: 'Too many attempts, please try again later.', bot: 'Security check failed. Please reload the page.',
-      taken: 'That slot was just taken. Please choose another one.', fail: 'Sorry, that did not work. Please try again or write to irena@aiden.ae.'},
+    err: {name: 'Please enter your name.', email: 'Please enter a valid e-mail.', consent: 'Please accept the data processing.', rate: 'Thanks for your patience! Please try again in a few minutes.', bot: 'Just reload the page once and you are good to go.',
+      taken: 'Someone just picked that time. Feel free to choose another one.', fail: 'Something got stuck for a moment. Please try again or write to irena@aiden.ae.'},
     doneH: "You're booked!", done: (d, e) => `We'll talk on <b>${d}</b>. The confirmation with the Teams link and calendar file is on its way to <b>${e}</b>.`,
     doneP: "I'm really looking forward to meeting you!", back: 'Back to the homepage', home: '/', locale: 'en-GB', wd: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], uhr: '',
   };
