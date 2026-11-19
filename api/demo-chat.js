@@ -23,9 +23,15 @@ export async function demoAnswer(bot, message, history = [], fetchImpl = fetch) 
     body: JSON.stringify({ model: process.env.DEMO_LLM_MODEL || process.env.LLM_MODEL || "claude-haiku-5-5", max_tokens: 700,
       system: [{ type: "text", text: cfg.system, cache_control: { type: "ephemeral" } }], messages: msgs }),
   });
-  if (!r.ok) return { answer: "", mode: "faq-fallback" };
+  if (!r.ok) {
+    // status and error type only, never the visitor's text
+    let type = ""; try { type = (await r.json())?.error?.type || ""; } catch {}
+    console.error(`demo-chat ${bot}: model API ${r.status} ${type}`);
+    return { answer: "", mode: "faq-fallback" };
+  }
   const data = await r.json();
   let text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text || "").join("").trim();
+  if (data.stop_reason !== "end_turn") console.warn(`demo-chat ${bot}: stop_reason ${data.stop_reason}, ${text.length} chars`);
   if (data.stop_reason === "max_tokens") text = trimToSentence(text);
   return text ? { answer: text, mode: "llm" } : { answer: "", mode: "faq-fallback" };
 }
