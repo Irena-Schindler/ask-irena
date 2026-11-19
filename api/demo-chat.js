@@ -19,7 +19,9 @@ export async function demoAnswer(bot, message, history = [], fetchImpl = fetch) 
   const r = await fetchImpl("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: process.env.DEMO_LLM_MODEL || process.env.LLM_MODEL || "claude-haiku-5-5", max_tokens: 700, system: cfg.system, messages: msgs }),
+    // system as cacheable block: the long product catalogs are billed at the cache rate on follow-up turns
+    body: JSON.stringify({ model: process.env.DEMO_LLM_MODEL || process.env.LLM_MODEL || "claude-haiku-5-5", max_tokens: 700,
+      system: [{ type: "text", text: cfg.system, cache_control: { type: "ephemeral" } }], messages: msgs }),
   });
   if (!r.ok) return { answer: "", mode: "faq-fallback" };
   const data = await r.json();
@@ -28,7 +30,22 @@ export async function demoAnswer(bot, message, history = [], fetchImpl = fetch) 
   return text ? { answer: text, mode: "llm" } : { answer: "", mode: "faq-fallback" };
 }
 
+// Demo pages hosted on aiden.ae call this endpoint cross-origin.
+export const ALLOWED_ORIGINS = ["https://www.aiden.ae", "https://aiden.ae"];
+export function cors(req, res) {
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader("access-control-allow-origin", origin);
+    res.setHeader("vary", "Origin");
+    res.setHeader("access-control-allow-methods", "POST, OPTIONS");
+    res.setHeader("access-control-allow-headers", "content-type");
+    res.setHeader("access-control-max-age", "86400");
+  }
+}
+
 export default async function handler(req, res) {
+  cors(req, res);
+  if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
   res.setHeader("cache-control", "no-store");
   const ip = (req.headers["x-forwarded-for"] || "").split(",")[0] || "anon";

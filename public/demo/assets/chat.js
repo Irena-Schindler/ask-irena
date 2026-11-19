@@ -108,7 +108,7 @@
   function ask(q, prior) {
     var ctrl = window.AbortController ? new AbortController() : null;
     var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 16000);
-    return fetch('/api/demo-chat', {
+    return fetch(C.api || '/api/demo-chat', {
       method: 'POST', headers: { 'content-type': 'application/json' }, signal: ctrl ? ctrl.signal : undefined,
       body: JSON.stringify({ bot: C.bot, message: q, history: prior })
     }).then(function (r) { return r.json(); })

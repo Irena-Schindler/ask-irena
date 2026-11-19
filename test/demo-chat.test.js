@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { demoAnswer } from "../api/demo-chat.js";
+import handler, { demoAnswer } from "../api/demo-chat.js";
 import { DEMO_BOTS } from "../lib/demo-bots.js";
 
 const fakeApi = (text, seen = {}) => async (url, init) => {
@@ -34,7 +34,8 @@ test("model answer uses the bot's own system prompt and cleaned history", async 
   const r = await demoAnswer("tyme", "Welches Deck für Street?", history, fakeApi("Nimm 8.0 oder 8.125. [[product:martini]]", seen));
   assert.equal(r.mode, "llm");
   assert.match(r.answer, /\[\[product:martini\]\]/);
-  assert.equal(seen.system, DEMO_BOTS.tyme.system);
+  assert.equal(seen.system[0].text, DEMO_BOTS.tyme.system);
+  assert.equal(seen.system[0].cache_control.type, "ephemeral");
   assert.deepEqual(seen.messages.map((m) => m.role), ["user", "assistant", "user"]);
   delete process.env.ANTHROPIC_API_KEY;
 });
@@ -44,4 +45,29 @@ test("API errors fall back to the page FAQ", async () => {
   const r = await demoAnswer("tyme", "Hi", [], async () => ({ ok: false }));
   assert.equal(r.mode, "faq-fallback");
   delete process.env.ANTHROPIC_API_KEY;
+});
+
+const mockRes = () => {
+  const r = { headers: {}, code: 0, body: null, ended: false };
+  r.setHeader = (k, v) => { r.headers[k.toLowerCase()] = v; };
+  r.status = (c) => { r.code = c; return r; };
+  r.json = (o) => { r.body = o; return r; };
+  r.end = () => { r.ended = true; return r; };
+  return r;
+};
+
+test("rickert bot knows the catalog and its contact data", () => {
+  assert.match(DEMO_BOTS.rickert.system, /EP-Zinkphosphatgrundierung 3052 \| .* \| ep-zinkphosphatgrundierung-3052/);
+  assert.match(DEMO_BOTS.rickert.system, /2508-0/);
+  assert.match(DEMO_BOTS.rickert.system, /Erfinde keine technischen Werte/);
+});
+
+test("CORS preflight is answered for aiden.ae only", async () => {
+  const ok = mockRes();
+  await handler({ method: "OPTIONS", headers: { origin: "https://www.aiden.ae" } }, ok);
+  assert.equal(ok.code, 204);
+  assert.equal(ok.headers["access-control-allow-origin"], "https://www.aiden.ae");
+  const other = mockRes();
+  await handler({ method: "OPTIONS", headers: { origin: "https://evil.example" } }, other);
+  assert.equal(other.headers["access-control-allow-origin"], undefined);
 });
