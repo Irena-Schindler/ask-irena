@@ -144,8 +144,20 @@
 
   $('cb-form').addEventListener('submit', function (e) { e.preventDefault(); var v = input.value; input.value = ''; send(v); });
   $('cb-reset').onclick = start;
-  function minimize() { $('cb-panel').hidden = true; $('cb-launchrow').hidden = false; }
-  function openChat() { $('cb-panel').hidden = false; $('cb-launchrow').hidden = true; input.focus(); }
+  // Phones: the open panel covers the visible screen. The visual viewport shrinks when the keyboard opens,
+  // so size the panel to it (CSS falls back to 100dvh) and stop the page behind it from scrolling.
+  var phone = window.matchMedia ? window.matchMedia('(max-width: 600px)') : { matches: false };
+  var vv = window.visualViewport, panel = $('cb-panel');
+  function fit() {
+    var on = phone.matches && !panel.hidden;
+    document.documentElement.classList.toggle('cb-lock', on);
+    if (on && vv) { panel.style.setProperty('--cb-h', vv.height + 'px'); panel.style.setProperty('--cb-top', vv.offsetTop + 'px'); scroll(); }
+    else { panel.style.removeProperty('--cb-h'); panel.style.removeProperty('--cb-top'); }
+  }
+  if (vv) { vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit); }
+  window.addEventListener('resize', fit);
+  function minimize() { panel.hidden = true; $('cb-launchrow').hidden = false; fit(); }
+  function openChat() { panel.hidden = false; $('cb-launchrow').hidden = true; fit(); if (!phone.matches) input.focus(); }
   $('cb-min').onclick = function () { minimize(); $('cb-launch').focus(); };
   $('cb-launch').onclick = openChat;
   $('cb-teaser-open').onclick = openChat;
@@ -156,5 +168,5 @@
 
   start();
   // On phones the open panel would cover the page: start with the button and its greeting bubble.
-  if (window.matchMedia && window.matchMedia('(max-width: 600px)').matches) minimize();
+  if (phone.matches) minimize();
 })();
