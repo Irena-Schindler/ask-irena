@@ -66,6 +66,7 @@ h1 em{color:var(--gold);font-style:italic;text-shadow:0 0 38px rgba(212,169,10,.
 .btn.gold:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(212,169,10,.65)}
 .btn.ghost{border-color:rgba(255,255,255,.22);color:#fff}
 .btn.ghost:hover{border-color:var(--gold);background:rgba(212,169,10,.08);transform:translateY(-3px)}
+button.btn{font-family:inherit}button.btn.ghost{background:transparent}button.btn.ghost:hover{background:rgba(212,169,10,.08)}
 .badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
 .badges span{border:1px solid rgba(212,169,10,.45);color:var(--gold-2);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;background:rgba(212,169,10,.06)}
 .live{display:inline-flex;align-items:center;gap:8px}
@@ -198,6 +199,7 @@ footer .legal{display:inline-flex;gap:14px;margin-left:8px}footer .legal a{font-
       <p class="lead">Voice- und Chat-Agenten, LLM-Integrationen und ML-Systeme, die auch <i>nach der Demo</i> funktionieren. Zuvor Lead Data Scientist bei <i>Volkswagen</i> und Senior Data Scientist bei <i>Konica Minolta</i>.</p>
       <div class="cta">
         <a class="btn gold" href="#ask"><span>Frag <span class="aiw">AI</span>rena über mich →</span></a>
+        <button class="btn ghost" type="button" data-voice><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg><span>Mit <span class="aiw">AI</span>rena sprechen</span></button>
         <a class="btn ghost" href="https://github.com/Irena-Schindler/Irena-Schindler/blob/main/Irena_Schindler_CV.pdf">Lebenslauf (PDF)</a>
       </div>
       <div class="badges"><span class="live">Ab sofort verfügbar</span><span>Remote weltweit</span><span>Vor Ort in Dubai/VAE</span><span>DE · EN</span></div>
@@ -291,6 +293,7 @@ footer .legal{display:inline-flex;gap:14px;margin-left:8px}footer .legal a{font-
       <h3 style="margin:0 0 8px;font-size:22px"><span style="color:#f2c94c;text-shadow:0 0 10px rgba(242,201,76,.75),0 0 22px rgba(212,169,10,.45);font-weight:800">AI</span>rena · Irenas KI-Assistentin</h3>
       <p style="color:#a9a59a;margin:0 0 22px">Name und E-Mail eingeben, Fragen stellen, danach direkt ein 30-minütiges Kennenlerngespräch buchen.</p>
       <button class="btn gold" type="button" onclick="window.openIrenaChat&&openIrenaChat()">Chat starten →</button>
+      <p style="margin:14px 0 0"><button class="btn ghost" type="button" data-voice><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg><span>Oder live mit ihr sprechen, mit Stimme und Video</span></button></p>
       <p style="color:#a9a59a;font-size:13px;margin:18px 0 0">Ihre Angaben gehen nur an Irena – siehe Datenschutz.</p>
     </div>
     </div>
@@ -346,5 +349,6 @@ document.querySelectorAll('.reveal').forEach((el, i) => { el.style.transitionDel
 
 </script>
 <script src="/assets/widget.js" defer></script>
+<script src="/assets/airena-voice.js" defer></script>
 </body>
 </html>

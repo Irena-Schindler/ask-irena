@@ -225,4 +225,5 @@
   document.querySelectorAll('a[href="#ask"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); toggle(true); }));
   addEventListener('keydown', e => { if (e.key === 'Escape') toggle(false); });
   window.openIrenaChat = () => toggle(true);
+  window.closeIrenaChat = () => { if (panel.classList.contains('open')) toggle(false); };
 })();
