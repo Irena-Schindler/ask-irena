@@ -1,5 +1,5 @@
 // "Mit AIrena sprechen": lädt den Sprach- und Avatar-Assistenten aus dem AIDEN-Portal erst beim ersten Klick.
-// Der eigene schwebende Knopf des Portal-Widgets bleibt verborgen, damit er den Text-Chat unten rechts nicht verdeckt.
+// Der eigene schwebende Knopf des Portal-Widgets bleibt verborgen und das Fenster sitzt über dem Text-Chat-Knopf unten rechts.
 (() => {
   const SRC = 'https://portal.irena-schindler.com/widget/v1.js';
   const ID = 'aiden-lena-kopie-2-kopie-2';
@@ -9,7 +9,7 @@
   const verstecken = (sr) => {
     if (sr.getElementById('airena-site')) return;
     const st = document.createElement('style'); st.id = 'airena-site';
-    st.textContent = '.launch,.teaser{display:none!important}';
+    st.textContent = '.launch,.teaser{display:none!important}.panel{bottom:calc(100px + env(safe-area-inset-bottom,0px))!important;max-height:calc(100vh - 130px)!important}';
     sr.appendChild(st);
   };
   const oeffnen = (versuche = 0) => {
